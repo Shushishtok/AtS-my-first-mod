@@ -31,14 +31,14 @@ namespace MyFirstMod
             Instance.Logger.LogInfo("Initializing post Init References in MainController");
             CustomCornerstones.CreateNewCornerstones();
             Utils.SetSeasonsTime(20f, 20f, 10f, SeasonQuarter.First); // makes cornerstones appear immediately with game start
-        }              
+        }
 
         [HarmonyPatch(typeof(CornerstonesService), nameof(CornerstonesService.GenerateRewardsFor))]
         [HarmonyPrefix]
         private static bool GenerateRewardsFor_PrePatch(CornerstonesService __instance, SeasonRewardModel model, ref string viewConfiguration, ref bool isExtra)
         {
-            Log.Info(string.Format("[Cor] Generate{0} cornerstones for {1} {2} {3} with model {4} {5} {6}", new object[]
-            {
+            Log.Info(string.Format("[Cor] Generate{0} cornerstones for {1} {2} {3} with model {4} {5} {6}",
+            [
                 __instance.GetExtraLogSufix(isExtra),
                 Serviceable.CalendarService.Year,
                 Serviceable.CalendarService.Season,
@@ -46,7 +46,7 @@ namespace MyFirstMod
                 model.year,
                 model.season,
                 model.quarter
-            }), null);
+            ]), null);
 
             List<string> effects = [$"{PluginInfo.PLUGIN_GUID}_Honeytraps", "Resolve for Glade", $"{PluginInfo.PLUGIN_GUID}_Humble Bundles"];
 

@@ -15,7 +15,6 @@
     <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
     <PackageReference Include="BepInEx.Core" Version="5.*" />
     <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-    <PackageReference Include="UniRx" Version="5.4.1" />
     <PackageReference Include="UnityEngine.Modules" Version="2021.3.15" IncludeAssets="compile" />	  	
   </ItemGroup>
 
@@ -30,6 +29,9 @@
 		</Reference>
 		<Reference Include="Sirenix.Serialization">
 		  <HintPath>D:\Steam\steamapps\common\Against the Storm\Against the Storm_Data\Managed\Sirenix.Serialization.dll</HintPath>
+		</Reference>
+		<Reference Include="UniRx">
+		  <HintPath>D:\Steam\steamapps\common\Against the Storm\Against the Storm_Data\Managed\UniRx.dll</HintPath>
 		</Reference>
 		<Reference Include="Unity.Addressables">
 		  <HintPath>D:\Steam\steamapps\common\Against the Storm\Against the Storm_Data\Managed\Unity.Addressables.dll</HintPath>
