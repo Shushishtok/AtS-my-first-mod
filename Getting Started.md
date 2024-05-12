@@ -4,7 +4,7 @@ Hello there, viceroy! So you decided to try your hand in modding Against The Sto
 
 In all seriousness, we are glad that you decided to join our modding community and add your little twists to the already incredible game. It can be adding new stuff that don't exist, rebalancing of existing contents in the game, or maybe completely changing how the game works. Everything is possible, though some tasks may be easier than others. Remember to start simple and go from there.
 
-Before you begin the process, if you aren't in the AtS modding Discord yet, feel free to join us by clicking on [this Discord invite](www.google.com).
+Before you begin the process, if you aren't in the AtS modding Discord yet, feel free to join us by clicking on [this Discord invite](https://discord.com/invite/AdzCf5uzNv).
 
 This guide assumes you have a Windows PC (preferably Windows 10 or 11).
 
