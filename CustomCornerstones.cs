@@ -5,6 +5,7 @@ using Eremite;
 using Eremite.Model;
 using Eremite.Model.Effects;
 using Eremite.Model.Effects.Hooked;
+using MyFirstMod.CustomHooks;
 using System;
 using TextArgType = Eremite.Model.Effects.Hooked.TextArgType;
 
@@ -20,6 +21,7 @@ namespace MyFirstMod
             CreateCornerstoneHumbleBundles();
             CreateCornerstoneSteelBoots();
             CreateCornerstoneHoneytraps();
+            CreateCornerstoneJoyOfCreation();
             ATS_API.Plugin.Log.LogInfo("All custom cornerstones created successfully!");
         }
 
@@ -211,6 +213,44 @@ namespace MyFirstMod
             builder.SetDisplayName(cornerstoneName);
             builder.SetDescription($"Gain {amount} {Utils.GetGoodIconAndName(insectGoodModel)} every minute.");
             builder.EffectModel.good = insectGoodRef;
+        }
+
+        private static void CreateCornerstoneJoyOfCreation()
+        {
+            string cornerstoneName = "Joy of Creation";
+            string cornerstoneIconPath = "Joy of Creation.jpg";
+
+            HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID ,cornerstoneName, cornerstoneIconPath);
+            builder.SetPositive(true);
+            builder.SetRarity(EffectRarity.Rare);
+            builder.SetObtainedAsCornerstone();
+            builder.SetAvailableInAllBiomesAndSeasons();
+            builder.SetDrawLimit(1);
+            builder.SetDisplayName(cornerstoneName);
+            builder.SetLabel("Modded by Shush");
+            builder.SetDescription("Your village is filled with a little bit of hope with every new structure erected. " +
+                                    "Gain {0} resolve any time {1} buildings are constructed. " +
+                                    "(The bonus is added retroactively)");
+            builder.SetDescriptionArgs((SourceType.HookedEffect, TextArgType.Amount, 0), (SourceType.Hook, TextArgType.Amount, 0));
+            builder.SetPreviewDescription("PROGRESS: {0}/{1}. GAINED: {2}");
+            builder.SetPreviewDescriptionArgs(
+               (HookedStateTextArg.HookedStateTextSource.ProgressInt, 0),
+               (HookedStateTextArg.HookedStateTextSource.HookAmountInt, 0),
+               (HookedStateTextArg.HookedStateTextSource.TotalGainIntFromHooked, 0)
+            );
+            builder.SetRetroactiveDescription("Expected Gain: {0}");
+            builder.SetRetroactiveDescriptionArgs(
+                (HookedStateTextArg.HookedStateTextSource.TotalGainIntFromHooked, 0)
+            );
+
+            BuildingCompletedHook buildingCompletedHook = Activator.CreateInstance<BuildingCompletedHook>();
+            buildingCompletedHook.amount = 3;
+            buildingCompletedHook.startWithCurrentValue = true;
+            buildingCompletedHook.ignoreDecorationBuildings = true;
+            buildingCompletedHook.ignoreRoads = true;
+
+            builder.AddHook(buildingCompletedHook);
+            builder.AddHookedEffect(EffectFactory.AddHookedEffect_IncreaseResolve(builder, 1));
         }
     }
 }

@@ -1,11 +1,16 @@
 ﻿using BepInEx;
 using Eremite;
+using Eremite.Buildings;
 using Eremite.Controller;
+using Eremite.Controller.Effects;
 using Eremite.Model;
 using Eremite.Model.Effects;
 using Eremite.Model.State;
 using Eremite.Services;
 using HarmonyLib;
+using MyFirstMod.CustomHooks;
+using MyFirstMod.CustomServiceables;
+using System;
 using System.Collections.Generic;
 
 namespace MyFirstMod
@@ -48,7 +53,7 @@ namespace MyFirstMod
                 model.quarter
             ]), null);
 
-            List<string> effects = [$"{PluginInfo.PLUGIN_GUID}_Honeytraps", "Resolve for Glade", $"{PluginInfo.PLUGIN_GUID}_Humble Bundles"];
+            List<string> effects = [$"{PluginInfo.PLUGIN_GUID}_Joy of Creation", "Resolve for Glade", $"{PluginInfo.PLUGIN_GUID}_Humble Bundles"];
 
             RewardPickState reward = new()
             {
@@ -104,6 +109,33 @@ namespace MyFirstMod
             {
                 __result = __instance.amountText + __result;
             }            
+        }
+
+        [HarmonyPatch(typeof(Building), nameof(Building.FinishConstruction))]
+        [HarmonyPostfix]
+        private static void Building_FinishConstruction_Postfix(Building __instance)
+        {
+            CustomServicable.OnBuildingCompleted(__instance);
+        }
+
+        [HarmonyPatch(typeof(HookedEffectsController), nameof(HookedEffectsController.GetMonitorFor))]
+        [HarmonyFinalizer]
+        private static Exception HookedEffectsController_GetMonitorFor_Finalizer(Exception __exception, HookLogicType type, ref IHookMonitor __result)
+        {
+            if (__exception is NotImplementedException)
+            {
+                // Check custom types
+                switch (type)
+                {
+                    case ((HookLogicType)CustomHookType.BuildingCompleted):
+                        __result = CustomMonitors.buildingCompletedMonitor;
+                        return null; // do not throw exception                        
+                    default:
+                        throw __exception;
+                }
+            }
+
+            return __exception;
         }
     }
 }
