@@ -22,6 +22,7 @@ namespace MyFirstMod
             CreateCornerstoneSteelBoots();
             CreateCornerstoneHoneytraps();
             CreateCornerstoneJoyOfCreation();
+            CreateCornerstoneBotanyKnowledge();
             ATS_API.Plugin.Log.LogInfo("All custom cornerstones created successfully!");
         }
 
@@ -251,6 +252,47 @@ namespace MyFirstMod
 
             builder.AddHook(buildingCompletedHook);
             builder.AddHookedEffect(EffectFactory.AddHookedEffect_IncreaseResolve(builder, 1));
+        }
+
+        private static void CreateCornerstoneBotanyKnowledge()
+        {
+            string cornerstoneName = "Botany Knowledge";
+            string cornerstoneIconPath = "Botany Knowledge.jpg";
+
+            HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID, cornerstoneName, cornerstoneIconPath);
+            builder.SetPositive(true);
+            builder.SetRarity(EffectRarity.Legendary);
+            builder.SetObtainedAsCornerstone();
+            builder.SetAvailableInAllBiomesAndSeasons();
+            builder.SetDrawLimit(1);
+            builder.SetDisplayName(cornerstoneName);
+            builder.SetLabel("Modded by Shush");
+            builder.SetDescription("An ever increasing understanding of plants pushes the potential of handling roots. " +
+                "Root production increases by {0} every {1} times it's produced.");
+            builder.SetDescriptionArgs(
+                    (SourceType.HookedEffect, TextArgType.Amount, 0),
+                    (SourceType.Hook, TextArgType.Amount, 0)
+                );
+
+            builder.SetPreviewDescription("PROGRESS: {0}/{1}. GAINED: {2}");
+            builder.SetPreviewDescriptionArgs(
+                    (HookedStateTextArg.HookedStateTextSource.ProgressInt, 0),
+                    (HookedStateTextArg.HookedStateTextSource.HookAmountInt, 0),
+                    (HookedStateTextArg.HookedStateTextSource.TotalGainIntFromHooked, 0)
+                );
+
+            GoodModel rootGoodModel = MB.Settings.GetGood(GoodsTypes.Roots.ToName());
+            GoodRef rootGoodRefForHook = new() { good = rootGoodModel, amount = 25 };
+            GoodRef rootGoodRefForEffect = new() { good = rootGoodModel, amount = 1 };
+
+            GoodProducedHook goodProducedHook = Activator.CreateInstance<GoodProducedHook>();
+            goodProducedHook.good = rootGoodRefForHook;
+            goodProducedHook.cycles = true;
+            builder.AddHook(goodProducedHook);
+
+            GoodsRawProductionEffectModel goodsRawProductionEffect = EffectFactory.NewHookedEffect<GoodsRawProductionEffectModel>(builder);
+            goodsRawProductionEffect.good = rootGoodRefForEffect;
+            builder.AddHookedEffect(goodsRawProductionEffect);
         }
     }
 }
