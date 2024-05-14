@@ -84,7 +84,11 @@ namespace MyFirstMod
             // At this point a lot of the game's data will be available.
             // Your main entry point to access this data will be `Serviceable.Settings` or `MainController.Instance.Settings`
             Instance.Logger.LogInfo($"Performing game initialization on behalf of {PluginInfo.PLUGIN_GUID}.");
-            Instance.Logger.LogInfo($"The game has loaded {MainController.Instance.Settings.effects.Length} effects.");            
+            Instance.Logger.LogInfo($"The game has loaded {MainController.Instance.Settings.effects.Length} effects.");
+
+            BuildingModel shelterModel = MB.Settings.GetBuilding("Shelter");
+            GoodRef woodRef = shelterModel.requiredGoods[0];
+            woodRef.amount = 5;
         }
 
         [HarmonyPatch(typeof(GameController), nameof(GameController.StartGame))]
@@ -95,6 +99,16 @@ namespace MyFirstMod
             // So just use Harmony and save us all some time. This method will run after every game start
             var isNewGame = MB.GameSaveService.IsNewGame();
             Instance.Logger.LogInfo($"Entered a game. Is this a new game: {isNewGame}.");
+
+            if (isNewGame)
+            {                
+                SO.EffectsService.GrantWildcardPick(1);
+                Instance.Logger.LogInfo("New wildcard pick granted!");
+
+                EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");
+                resolveEffect.AddAsPerk();
+                Instance.Logger.LogInfo("Got the Resolve for Glade cornerstone.");
+            }
         }
 
         [HarmonyPatch(typeof(HookedEffectModel), nameof(HookedEffectModel.GetAmountText))]
@@ -108,7 +122,7 @@ namespace MyFirstMod
             if (__instance.amountText != null)
             {
                 __result = __instance.amountText + __result;
-            }            
+            }
         }
 
         [HarmonyPatch(typeof(Building), nameof(Building.FinishConstruction))]

@@ -226,18 +226,248 @@ private static void EffectModel_GetFullDescription_Postfix(ref string __result)
 
 As `__result` holds the full description, we can assign it a new string made from the word "[MODDED]" and then appending the actual description. This will trigger every time the game would try to get the description of an effect.
 
+### Using dnSpy to Export AtS Codebase
+
+Whenever you want to make a change, you first need to understand how things currently work. For that, you'll need to be able to effectively look at the current Against The Storm's codebase and search in it. We'll use dnSpy to both open the compiled C# code and export it as a project that we can load into Visual Studio.
+
+Open dnSpy.exe that you downloaded in the above section. The application opens. Click on File -> Open, and navigate to your Against The Storm's installation folder. Go into `Against the Storm_Data` -> `Managed` folder, then find and select `Assembly-CSharp.dll` to open it. This will load the codebase into the DLL, and if you'll expand it you'll be able to see the code in decompiled form.
+
+However, from my experience, the search in dnSpy is not great, so we will defer to Visual Studio's search instead. Click File -> Export to Project. Select a folder to export it to (not inside your mod's folder!). Uncheck the "Solution" checkbox. Set the Visual Studio to VS2019. Keep everything else the same and press Export.
+
+When it finishes, you can close dnSpy. You'll find a new folder named `Assembly-CSharp` in the place you selected. Open your mod in Visual Studio, then click on File -> Add -> Existing Project. Navigate to the `Assembly-CSharp` folder and find the file `Assembly-CSharp.csproj`. Open it to have both projects open at the same time. 
+
+You can now expand the `Assembly-CSharp` project in Visual Studio's Solution Explorer and see the entire codebase for the game. This is a bit of a massive codebase, so make to ease into it to not be overwhelmed.
+
+Now, if you'll press CTRL+SHIFT+F, this will open the "Find in Files" window, which will find all instances of your search parameters across the entire codebase. Try searching a few values such as "drizzle" - you should be able to see a ton of search results, which can help slowly figuring out the codebase in relevant areas. This will definitely come in handy.
+
+### Adding New Game Mechanics
+
+Let's imagine we want to make a new simple mechanic where you will always start a game with a Wildcard blueprint that you can choose. For that we'll have to search for "wildcard" and look for something that gives a wildcard - as we know there's a cornerstone that does it in the game, so there's probably logic for it somewhere. If we'd look at the functions in the search results, there's one that sounds suspiciously like what we want: `public void GrantWildcardPick(int amount)`.
+
+That sounds like a name of a method that grants X amount of wildcard picks. That's pretty good! Let's try to use this. Now we just need to find the appropriate place to put it. Since we want the logic to apply when the game starts, we will have to look for the logic that starts a game. Fortunately, this comes with the template! Open `plugin.cs` and find the function named `HookEveryGameStart`. Seems like it's a Harmony Postfix that runs after the game starts. Exactly what we need. Seems like it also comes with a `isNewGame` check, which we can guess that returns `true` if we started a new settlement, or `false` if we continue from an existing settlement. So let's make a simple if check:
+
+```cs
+if (isNewGame)
+{
+    // Grant wildcard
+}
+```
+
+Now we need to call the `GrantWildcardPick` function we found before. It seems to belong to the `EffectsService` class. Services are classes initialized by the game which hold information, references and methods to control the game logic in various ways. During an active game (even a game that just started), they are held in a class named `SO`, which we can access from mostly anywhere. This class grants us access all services that were initialized as part of the game. From it we can access `EffectsService`, which holds the `GrantWildcardPick` method that we want to call.
+
+Let's add it to our code:
+
+```cs
+if (isNewGame)
+{
+    SO.EffectsService.GrantWildcardPick(1)`
+}
+```
+
+We can also put a log which would make it easier to see when it triggered. We can use our plugin's `Logger` to do so. However, because `HookEveryGameStart` is a static function, we'll have to access the instance from a static parameter:
+
+Our final code should look like this:
+
+```cs
+if (isNewGame)
+{
+    SO.EffectsService.GrantWildcardPick(1);
+    Plugin.Instance.Logger.LogInfo("New wildcard pick granted for new game");
+}
+```
+
+When triggered, the log should appear in the BepInEx console, right after the existing log that checks if this is a new game. 
+
+Now build your project with Shift + F6 and launch it through Thunderstore Mod Manager in Modded mode. If you are currently in a settlement, abandon it; as stated above, we only grant the wildcard when starting a new game. Then start a new settlement. Check the logs to see if your log triggered, and check ingame to see if you can now pick any blueprint once. If you see the wildcard and the logs, you were successful in adding a new game mechanic!
+
+Feel free to mess around with the code, but try to stay simple for now - it is easy to be overwhelmed if we try to do complex ideas right away. Practice first and progress slowly while becoming more familiar with Eremite's codebase.
+
+### Changing Existing Stuff
+
+A common theme in modding is rebalancing the existing content and maybe mixing things up. This is done by finding existing content and tweaking their values before they take effect in a game.
+
+Before we begin - a word of caution. If you change things too much, saved games will fail to load and will corrupt a save that was loaded with previous values. Make sure to start a new settlement when values change. When your mod is published, make sure to let your players know to end their current settlement, if any, before they update your mod to a newer version that changes values around.
+
+Let's say we want to make a simple change where Shelters only cost 5 Wood to construct instead of the usual 10 Wood. For that we'll have to find the Shelter's building configuration - or as they're called in the code - models. A model is a bunch of configurations that belong to a single entity, like a building in our case, that you can make infinite copies of, such as Shelters.
+
+First, we need to find out the Shelter's internal ID. This will allow us to be able to reference it. The simplest way to do it is to print each building as a log and find the one we care about. 
+
+Open `plugin.cs` and find the method `HookMainControllerSetup`. It is an Harmony Postfix that triggers after `MainController.OnServicesReady` finishes running. This is a good time to add such changes, as we'll need the game's content to be initialized.
+
+Unlike `SO` that we referenced before, we will now reference the `MB` class. It holds all of the game's configurations and settings, without it being related to a specific run.
+
+Inside of `HookMainControllerSetup`, at the end of the method, add the following:
+
+```cs
+foreach(BuildingModel buildingModel in MB.Settings.Buildings)
+{
+    Instance.Logger.LogInfo("Found building with name: " + buildingModel.name + " and display name " + buildingModel.displayName.Text);
+}
+```
+
+Note: `name` is the internal name (or ID) used to identify a specific model, which `display name` is the localized (to your game's language) name.
+
+If we'll build and run the game now, we'll get a log for each building model in the game. For example:
+
+`[Info   :MyFirstMod] Found building with name: Sealed Biome Shrine and display name Beacon Tower`
+
+We can make the code only print things that have "Shelter" in their name, but for now, let's skip ahead and have the log that we want:
+
+`[Info   :MyFirstMod] Found building with name: Shelter and display name Shelter`
+
+Easy enough. Now that we know the internal name of the building, we can request that specific model and access it. Then we'll be able to directly manipulate its values. So what exactly are we doing? We want to find the configuration that determines the build cost of the Shelter. Looking at the BuildingModel class, we can find the following public field: `public GoodRef[] requiredGoods;`. It seems to be a list of GoodRefs (references to actual instances of goods). We can assume that if we'll log them, we'll find a single GoodRef of "10 wood", as it is the only good required to construct the building. So for the building to cost 5 Wood, we just need to tweak this reference. Let's try it out:
+
+```cs
+BuildingModel shelterModel = MB.Settings.GetBuilding("Shelter");
+GoodRef woodRef = shelterModel.requiredGoods[0]; // we know there's only one, so it's definitely the reference to wood
+woodRef.amount = 5;
+```
+
+Basically, we made it so the reference to a good is an instance of "5 wood" - which is used here as the price of the building.
+
+Build the project as usual and launch the game. Go into a settlement and check if Shelters now cost 5 wood. If so, success!
+
+It's important to note that the end code is usually very short and simple - but the real effort comes from searching and understanding how the game processes those entities.
+
+### Hand-On Challenge: Give Yourself a Perk
+
+Even though this is a guide, I think the best way to get things to connect is to actually try and do something for yourself. If you wish, do the following challenge. Otherwise, skip to the solution in the next section. This will be useful later for debugging effects.
+
+To complete the challenge, give the player on game start the perk "Woodcutter's Song". Its internal name (ID) is `Resolve for Glade`.
+
+Hints:
+* No Harmony overrides are necessary for this challenge.
+* Use the internal ID to fetch the perk configuration. Think where it would reside.
+* Remember: perks are actually just effects behind the scenes.
+* Check the model of the effect. It might contain a useful method to complete the challenge!
+
+### Hang-On Challenge Solution
+
+<details>
+	<summary>Click here to expand and reveal the solution.</summary>
+
+	First, because we want to give us a perk at the start of the game, we want to find that `HookEveryGameStart` function we used before to listen where games begin. This is where we'll put our code.
+
+	We want to fetch the effect from the settings list, like we did when we edited the Shelter in the above example. The internal name of the effect is known to us, so we can use it to fetch it:
+
+	```cs
+	EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");                	
+	```
+
+	Next, we will look at the EffectModel class. If we search for "perk" in this class, we can find a useful function to allow us to apply this effect as a perk, which is what we need. Let's also add a log for it as well.
+
+	```cs
+	EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");                
+	resolveEffect.AddAsPerk();
+	Instance.Logger.LogInfo("Got the Resolve for Glade perk.");
+	```
+	
+	After building and running this, you should have the perk Woodcutter's Song as a perk on the bottom left of the screen.
+
+</details>
+
+# Using The ATS API
+
+Until now we didn't use the ATS API library at all. We referenced actual code, overridden or added some parts of the game's code. This is great when we want to tweak the game's logic or change existing content.
+
+The ATS API library is intended to make some actions abstract, by taking care of the handling of a bunch of complicated actions. As it grows, new things will be added to it. At the time of writing this guide, its major part is by helping us creating new content, such as perks, cornerstones, goods, traders, and more! If you have any ideas or requests, feel free to tell us in the modding Discord!
+
+## Effects
+
+Almost anything that modifies the game in any way is an Effect. Forest Mysteries, Glade Events (both consequences and working effects), cornerstones and perks are all effects that the player gets in various ways. Some are instant, while some are continuous effects, applying their logic constantly.
+
+In this section, we'll learn how to create new effects from scratch by using the ATS API. Note that we'll need icons in size of 128x128. If you don't have any, feel free to take them from the [Asset Folder](https://github.com/Shushishtok/AtS-my-first-mod/tree/master/Assets) of this repository.
+
+New effects must be created before the services are initialized but after references are initialized, so the best place to put them are in the following Harmony method:
+
+```cs
+[HarmonyPatch(typeof(MainController), nameof(MainController.InitReferences))]
+[HarmonyPostfix]
+private static void PostSetupMainController()
+{
+
+}
+```
+
+Copy this method and put it somewhere in `Plugin.cs`. Write the examples below inside it.
+
+### Simple Effect
+
+Let's begin with a simple effect. We will need two things for this effect to work. 
+
+First, we need an Effect Model. Eremite has a lot of predefined Effect Models that handle logic so we won't have to, which is nice. The list of models can be found [here](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/EFFECTS.md). Most of those Effect Model's behavior is self explanatory from their name. For some, we'll still need to test and see how they work. For now, let's pick an easy one: the `GoodsPerMinEffectModel` model. As its name might suggest, it gives the player X goods every minute. We decide how many and what good when we define the model.
+
+Second, we need a reference to the Good that we want to get every minute. The reference will define what Good will be given to the player and its amount.
+
+We want to make an effect named "Honeytraps". It will give you 5 Insects per minute.
+
+First, let's begin with some easy variables:
+
+```cs
+string effectName = "Honeytraps";
+string effectIconPath = "Honeytraps.jpg";
+int amount = 5;
+```
+
+We will use the corresponding image Honeytraps.jpg from the Assets Folder in the project. Create it if you don't have it yet - it will automatically be processed during the project build process into the mod.
+
+Next, let's create the Good Reference. We will attach it to the effect once we're doing creating it. We'll have to first fetch the model (configuration) of the Good we want to give the player:
+
+```cs
+GoodModel insectGoodModel = MB.Settings.GetGood(GoodsTypes.Insects.ToName());
+GoodRef insectGoodRef = new() { good = insectGoodModel, amount = amount };
+```
+
+Note that we used an enum named `GoodTypes`, which comes from the ATS API, and is used to make our lives easier so we won't have to guess the internal name of the Good - in this case - Insects.
+
+Next, we will create an "effect builder". This is where the ATS API comes in - this is a custom builder that manages most of the properties of the effects easily. When we create an effect builder, we must tell it what type of effect we're building. So we'll do that as follows:
+
+```cs
+EffectBuilder<GoodsPerMinEffectModel> builder = new(PluginInfo.PLUGIN_GUID, effectName, effectIconPath);
+```
+
+There are a few things to note here. First, the EffectBuilder is of type `GoodsPerMinEffectModel`, which is the effect model we wanted to use. Its constructor accepts 3 parameters: the mod's name (which is automatically stored in `PluginInfo.PLUGIN_GUID`), the effect's name, and the path to the effect's image (relative to the Assets folder in your project).
+
+Our effect's name will actually be `<Your mod name>_<Your effect name>` when the builder will create it. This is done to prevent name collisions in case either Eremite or other modders add effects with the same name.
+
+Next, we will use the builder to set up some properties for the effect:
+
+```cs
+builder.SetRarity(EffectRarity.Legendary); // sets it as a legendary perk
+builder.SetPositive(true); // sets it as a positive perk
+builder.SetDrawLimit(1); // makes it possible to get this perk via randoms a maximum of 1 time
+builder.SetAvailableInAllBiomesAndSeasons(); // adds the perk to all biomes' configuration
+builder.SetObtainedAsCornerstone(); // adds the perk to the list of cornerstones that you can obtain every year
+```
+
+We'll also set up some simple text for the English version of our mod.
+```cs
+builder.SetLabel("Modded Perk"); // sets the text of the perk's "category"
+builder.SetDisplayName(effectName); // sets the text in English for the perk to be displayed to players.
+builder.SetDescription($"Gain {amount} insects every minute."); // sets the description of the perk, shown when picking the perk or when hovering over it.
+```
+
+Lastly, we'll attach the Good Reference of 5 insects that we made at the start of the proces to the Effect Model of this builder. In the case of the `GoodsPerMinEffectModel`, it expects a Good Reference to use to provide the good.
+
+```cs
+builder.EffectModel.good = insectGoodRef;
+```
+
+**Note:** Don't forget to make the game add the perk by default in game start. You will do so by referencing the full name of the effect, as created by the builder:
+
+```cs
+EffectModel effectModel = SO.Settings.GetEffect($"{PluginInfo.PLUGIN_GUID}_Joy of Creation");
+effectModel.AddAsPerk();
+```
+
+Build the project and test to see if your effect works as intended. This is a simple effect that doesn't need a lot of configuration.
 
 # TO BE CONTINUED WHEN I GET THE TIME!
 
 Subjects to cover:
 
-* Coding your own changes (changes to game logic, utility functions)
-* Doing changes to existing stuff (goods, effects, seasons)
-* Using dnSpy to search for code - and exporting the codebase to a proper project file (and loading it in VS)
-* Creating new effects with API library
-	* Simple non-hooked effect (Honeytraps)
+* Creating new effects with API library	
     * Simple Hooked effect (Modding Tools)
-	* Multi-Layered effect (Bonding Time)
 	* Retroactive/Progressive effect (Humble Bundles)
-	* Using references to existing models in effects (Steel Boots, Humble Bundles)
+	* Multi-Layered effect (Bonding Time)	
 	

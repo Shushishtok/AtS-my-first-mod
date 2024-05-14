@@ -199,7 +199,7 @@ namespace MyFirstMod
         {
             string cornerstoneName = "Honeytraps";
             string cornerstoneIconPath = "Honeytraps.jpg";
-            int amount = 5;            
+            int amount = 5;
 
             GoodModel insectGoodModel = MB.Settings.GetGood(GoodsTypes.Insects.ToName());
             GoodRef insectGoodRef = new() { good = insectGoodModel, amount = amount };
