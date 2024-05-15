@@ -346,23 +346,23 @@ Hints:
 <details>
 	<summary>Click here to expand and reveal the solution.</summary>
 
-	First, because we want to give us a perk at the start of the game, we want to find that `HookEveryGameStart` function we used before to listen where games begin. This is where we'll put our code.
+First, because we want to give us a perk at the start of the game, we want to find that `HookEveryGameStart` function we used before to listen where games begin. This is where we'll put our code.
 
-	We want to fetch the effect from the settings list, like we did when we edited the Shelter in the above example. The internal name of the effect is known to us, so we can use it to fetch it:
+We want to fetch the effect from the settings list, like we did when we edited the Shelter in the above example. The internal name of the effect is known to us, so we can use it to fetch it:
 
-	```cs
-	EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");                	
-	```
+```cs
+EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");                	
+```
 
-	Next, we will look at the EffectModel class. If we search for "perk" in this class, we can find a useful function to allow us to apply this effect as a perk, which is what we need. Let's also add a log for it as well.
+Next, we will look at the EffectModel class. If we search for "perk" in this class, we can find a useful function to allow us to apply this effect as a perk, which is what we need. Let's also add a log for it as well.
 
-	```cs
-	EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");                
-	resolveEffect.AddAsPerk();
-	Instance.Logger.LogInfo("Got the Resolve for Glade perk.");
-	```
-	
-	After building and running this, you should have the perk Woodcutter's Song as a perk on the bottom left of the screen.
+```cs
+EffectModel resolveEffect = SO.Settings.GetEffect("Resolve for Glade");                
+resolveEffect.AddAsPerk();
+Instance.Logger.LogInfo("Got the Resolve for Glade perk.");
+```
+
+After building and running this, you should have the perk Woodcutter's Song as a perk on the bottom left of the screen.
 
 </details>
 
