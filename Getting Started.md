@@ -341,7 +341,7 @@ Hints:
 * Remember: perks are actually just effects behind the scenes.
 * Check the model of the effect. It might contain a useful method to complete the challenge!
 
-### Hang-On Challenge Solution
+### Hand-On Challenge Solution
 
 <details>
 	<summary>Click here to expand and reveal the solution.</summary>
