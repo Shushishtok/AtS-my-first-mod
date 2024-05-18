@@ -97,9 +97,7 @@ namespace MyFirstMod
 
             resolveBonusBuilder.EffectModel.hasRemovalDynamicStatePreview = true;
             resolveBonusBuilder.EffectModel.removalDynamicPreviewText = LocalizationManager.ToLocaText(PluginInfo.PLUGIN_GUID, resolveBonusBuilder.Name, "preview", "TIME LEFT: {0}");
-            HookedStateTextArg removalPreviewArgs = new() { asTime = true, sourceIndex = 0, source = HookedStateTextArg.HookedStateTextSource.RemovalProgressLeftFloat };
-
-            resolveBonusBuilder.EffectModel.removalStatePreviewArgs = [removalPreviewArgs];
+            resolveBonusBuilder.EffectModel.removalStatePreviewArgs = [new() { asTime = true, sourceIndex = 0, source = HookedStateTextArg.HookedStateTextSource.RemovalProgressLeftFloat }];
 
             builder.AddHookedEffect(resolveBonusBuilder.EffectModel);
 
@@ -107,8 +105,7 @@ namespace MyFirstMod
         }
 
         private static void CreateCornerstoneHumbleBundles()
-        {
-            ATS_API.Plugin.Log.LogInfo("Starting to build humble bundle cornerstone");
+        {            
             string cornerstoneName = "Humble Bundles";
             string cornerstoneIconPath = "HumbleBundles.jpg";
             int amountToGet = 3;
@@ -117,8 +114,7 @@ namespace MyFirstMod
             GoodModel brickGoodModel = settings.GetGood(GoodsTypes.Bricks.ToName());
             GoodModel plankGoodModel = settings.GetGood(GoodsTypes.Planks.ToName());
             GoodModel[] goodsToReceive = [fabricGoodModel, brickGoodModel, plankGoodModel];
-
-            ATS_API.Plugin.Log.LogInfo("builder start");
+            
             HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID, cornerstoneName, cornerstoneIconPath);
             builder.SetAvailableInAllBiomesAndSeasons();
             builder.SetObtainedAsCornerstone();
@@ -126,8 +122,7 @@ namespace MyFirstMod
             builder.SetPositive(true);
             builder.SetRarity(EffectRarity.Rare);
             builder.SetDisplayName(cornerstoneName);
-            builder.SetLabel("Modded by Shush");
-            ATS_API.Plugin.Log.LogInfo("setting a description");
+            builder.SetLabel("Modded by Shush");            
             builder.SetDescription("Traders like to throw in small extras in their deals with you. When selling goods worth {0} Amber to traders and trade routes, gain {1} " +
                 Utils.GetGoodIconAndName(fabricGoodModel) + ", " +
                 Utils.GetGoodIconAndName(brickGoodModel) + " and " +

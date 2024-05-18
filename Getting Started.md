@@ -329,7 +329,7 @@ Build the project as usual and launch the game. Go into a settlement and check i
 
 It's important to note that the end code is usually very short and simple - but the real effort comes from searching and understanding how the game processes those entities.
 
-### Hand-On Challenge: Give Yourself a Perk
+### Hands-On Challenge: Give Yourself a Perk
 
 Even though this is a guide, I think the best way to get things to connect is to actually try and do something for yourself. If you wish, do the following challenge. Otherwise, skip to the solution in the next section. This will be useful later for debugging effects.
 
@@ -341,7 +341,7 @@ Hints:
 * Remember: perks are actually just effects behind the scenes.
 * Check the model of the effect. It might contain a useful method to complete the challenge!
 
-### Hand-On Challenge Solution
+### Hands-On Challenge Solution
 
 <details>
 	<summary>Click here to expand and reveal the solution.</summary>
@@ -409,7 +409,7 @@ string effectIconPath = "Honeytraps.jpg";
 int amount = 5;
 ```
 
-We will use the corresponding image Honeytraps.jpg from the Assets Folder in the project. Create it if you don't have it yet - it will automatically be processed during the project build process into the mod.
+We will use the corresponding image `Honeytraps.jpg` from the Assets Folder in the project. Create it if you don't have it yet - it will automatically be processed during the project build process into the mod.
 
 Next, let's create the Good Reference. We will attach it to the effect once we're doing creating it. We'll have to first fetch the model (configuration) of the Good we want to give the player:
 
@@ -462,12 +462,389 @@ effectModel.AddAsPerk();
 
 Build the project and test to see if your effect works as intended. This is a simple effect that doesn't need a lot of configuration.
 
-# TO BE CONTINUED WHEN I GET THE TIME!
+### Simple Hooked Effect
 
-Subjects to cover:
+Now that we learned how to make a simple effect of a certain type, let's learn how to make a very common type of an effect that most likely is one of the more common effect types in the game.
 
-* Creating new effects with API library	
-    * Simple Hooked effect (Modding Tools)
-	* Retroactive/Progressive effect (Humble Bundles)
-	* Multi-Layered effect (Bonding Time)	
-	
+A hooked effect is an effect that applies hooks. Hooks are conditioned triggers that, when their condition applies, apply some kind of reward. The list of hooks can be found [here](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/HOOKS.md), and their name implies their conditions. For example, the `GameTimePassedHook` hook triggers after a certain amount of game time passed (taking into account the game speed, of course).
+
+The reward is an effect that gets immediately applied and becomes active, though it is hidden to the player by default. A copy (or stack) of that reward is given each time the hook trigger applies - for instance, you can make an effect that grants Global Resolve cumulatively apply every 5 minutes. Those effects can be either positive or negative to the player.
+
+Hooked effects are very powerful not only in their capabilities to apply further effects, but also in their capabilities to format the descriptions it displays to the player in dynamic ways.
+
+For the example of this hooked effect, we will make an effect named Modding Tools. This effect triggers whenever a total of 8 new villagers are added to the village over time for any reason, and grants you a bonus of 1 Global Resolve. We will also use the ATS API library for support on building this hooked effect.
+
+First, let's define the effect and the builder class:
+
+```cs
+string effectName = "Modding Tools";
+string effectIconPath = "ModdingTools.png";
+
+HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID, effectName, effectPath);
+```
+
+Note that we used the `HookedEffectBuilder` builder this time; this will give us a builder that we can use for building and configuring hooked effects.
+
+Next, let's add its generic details:
+
+```cs
+builder.SetPositive(true);
+builder.SetRarity(EffectRarity.Rare);
+builder.SetObtainedAsCornerstone();
+builder.SetAvailableInAllBiomesAndSeasons();
+builder.SetDrawLimit(1);
+builder.SetDisplayName(effectName);
+builder.SetLabel("Modded Perk");
+```
+
+Nothing new here. But here is where things start to get interesting:
+
+```cs
+builder.AddHook(HookFactory.AfterXNewVillagers(8));
+```
+
+First, we use the `HookFactory`, another class introduced by the ATS API. This stores a bunch of easy to create hooks by introducing methods that handle them for you. One such method is the `AfterXNewVillagers`, which returns a hook that triggers after a number of villagers arrive - in this case, 8 villagers.
+
+Second, we use the `AddHook` method of the builder to add the hook produced by the hook factory to the perk.
+
+Note that this alone doesn't do much. While it's hooked to a condition, it doesn't trigger any effect when it is fulfilled. So let's add an effect: 1 permanent Global Resolve each time the hook is fulfilled:
+
+```cs
+builder.AddHookedEffect(EffectFactory.AddHookedEffect_IncreaseResolve(builder, 1, ResolveEffectType.Global));
+```
+
+Similar to adding hooks, we use the `EffectFactory` introduced by the ATS API. Like the Hook Factory, it stores a bunch of methods to easily set up and produce effects. Note that this one takes the `builder` as argument - which it uses to give the effect a unique name to make sure there are no name collisions between different perks.
+
+Also, note that it takes two more arguments: the amount of resolve to grant, and the type of resolve to grant (global, racial, need based, etc.). We have set it to grant 1 Global Resolve.
+
+Then we use the `AddHookedEffect` to assign the effect to the hook. This means that this effect is added to the player each time the hook triggers.
+
+**NOTE:** A single Hooked Effect can host multiple hooks and effects, which can be used to apply complex effects and rewards. We'll see an example of that later on.
+
+Lastly, we want to add two kinds of descriptions to the perk: a regular description that describes what the effect does, and a "preview" description that shows at the bottom of an active perk. We will make them dynamic to adhere to the values of the hooks and hooked effects we've attached to this effect.
+
+Let's start with the description:
+
+```cs
+builder.SetDescription("Modders have assembled new tools that bring in new talent. " +
+                        "Every {0} new Villagers gain +{1} Global Resolve.");
+```
+
+As you can, the description is straightforward, but it has two specific instances where there are placeholder values - `{0}` and `{1}`. We want to replace those with dynamic values. So let's do that:
+
+```cs
+builder.SetDescriptionArgs(
+	(SourceType.Hook, TextArgType.Amount, 0),
+	(SourceType.HookedEffect, TextArgType.Amount, 0));
+```
+
+Description args, or arguments, instructs the game what to fill in dynamically for the text. It takes 3 parameters:
+* Source Type - where the value comes from? From what type of structure? This can be a hook, a hooked effect, or other types of hooks.
+* Text Argument Type - which field is the value stored in? This usually refers to a common field.
+* Source Index - if you have multiple sources of the same type (e.g. 2 hooks), what is the index, starting from 0, the desired source is in? For example, if you added two hooks, then the first hook is assigned to Source Index 0 while the other is assigned to Source Index 1.
+
+In order for the dynamic texts to be assigned to the values we want, we need to set them up in order.
+
+The first value will replace `{0}`, which should be `Every 8 new Villagers..`. The `8` is defined in the hook, as it listens to the amount of villagers added, so the Source Type should be `SourceType.Hook`. The number `8` comes from the amount field of the **hook**, which is provided in the Hook Factory method. This means the Text Argument Type should be `TextArgType.Amount`. And lastly, we only have one hook, which should be at index 0, so that would be Source Index `0`.
+
+Similarly, we do the same for the `{1}`, which should be substituted to `gain +1 Global Resolve.`. The number `1` comes from the amount field of the **effect** that we produced using the Effect Factory, so this time we need to use `SourceType.HookedEffect`. The rest are the same, since this is the first Hooked Effect, so it also gets stored in Source Index `0`.
+
+This should set up our regular description. But we also want to include preview descriptions, which are shown each time we hover over a perk that we have. So let's do that:
+
+```cs
+builder.SetPreviewDescription("+{0} Global Resolve");
+```
+
+In this case, we want the text to show how much Global Resolve we got, in total, from all the instances of the hook firing. This will count up all instances (stacks) of the hooked effect and calculate how much Global Resolve they give the player in total. Note that this value is an `Integer` - it cannot be `3.5` Global Resolve for instance. This is important in order to make the dynamic value show up properly.
+
+Let's add the arguments to the preview to set up the dynamic values:
+
+```cs
+builder.SetPreviewDescriptionArgs(
+	(HookedStateTextArg.HookedStateTextSource.TotalGainIntFromHooked, 0)
+);
+```
+
+Similarly to the Description Argument, we need to provide certain arguments:
+* HookedStateTextArg - This is a collection of possible ways to instruct the system to return a calculated value.
+* Source Index - Similar to description args. Controls which hooked effect to look at, starting from the first effect hook at index 0.
+
+In this case, we want it to calculate the total Global Resolve bonus from the first (and only) hooked effect. So we can use the `TotalGainIntFromHooked` method and instruct it to look at Source Index 0.
+
+**Note:** Each method has a `float` variance (such as `TotalGainFloatFromHooked`). If you choose the wrong numeric type (int/float), it will always default the value to 0.
+
+This simple hooked effect is now done! Build and test it out as we did with the Simple Effect before.
+
+### Retroactive/Progressive Hooked Effect
+
+Now that we know how to use a simple hooked effect, let's introduce another one with a few small twists. We will now make a perk named Humble Bundles, in which you will get 3 Fabrics, Bricks and Planks each time you sell goods worth a total of 20 Amber.
+
+There are a few challenges to tackle in this example. First, we will use a new type of hook and hooked effect. The hook is somewhat straightforward, but the effect is a little more complex - since we want it to use specific goods. Additionally, we want this perk to be retroactive, and reward the player for what they have sold so far until getting this perk. And lastly, we want to show the player how many more goods they have to sell before getting another instance of the bonus of 3 Fabrics, Bricks and Planks.
+
+Let's get the simple things out of the way with setting up the builder:
+
+```cs
+string effectName = "Humble Bundles";
+string effectIconPath = "HumbleBundles.jpg";
+
+HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID, cornerstoneName, cornerstoneIconPath);
+builder.SetAvailableInAllBiomesAndSeasons();
+builder.SetObtainedAsCornerstone();
+builder.SetDrawLimit(1);
+builder.SetPositive(true);
+builder.SetRarity(EffectRarity.Rare);
+builder.SetDisplayName(effectName);
+builder.SetLabel("Modded Perk");
+```
+
+Nothing new here. Now let's add the `TraderValueSoldHook` hook, which triggers when items are sold at a certain value over time. However, since the ATS API is still new, at the time of writing this guide it doesn't support this hook in the Hook Factory - this is expected to be introduced in future versions of it. We will simply construct it manually for now:
+
+```cs
+TraderValueSoldHook traderValueSoldHook = Activator.CreateInstance<TraderValueSoldHook>();
+traderValueSoldHook.amount = 20;
+traderValueSoldHook.startWithCurrentValue = true;
+builder.AddHook(traderValueSoldHook);
+```
+
+As you can see, we created an instance of the hook. Then we set its `amount` value to 20, which indicates how much the player has to sell for it trigger. And lastly, we also set the `startWithCurrentValue` property to true. This makes it so the effect becomes *retroactive*, as it starts with the total accumulated worth of value sold since the start of the game. If this was set to false, then it would simply start with a value of `0`, which meant the player has to start selling items from the moment this perk was obtained.
+
+However, for this perk we want it to be retroactive so you'll get the bonus for past deals with the traders.
+
+Then the builder adds this hook to itself.
+
+Next, we have to make the hooked effect - the bonus that triggers when the hook accumulates enough worth - to grant us the desired goods. Let's first set up those goods first:
+
+```cs
+int amountToGet = 3;
+Settings settings = MB.Settings;
+GoodModel fabricGoodModel = settings.GetGood(GoodsTypes.Fabric.ToName());
+GoodModel brickGoodModel = settings.GetGood(GoodsTypes.Bricks.ToName());
+GoodModel plankGoodModel = settings.GetGood(GoodsTypes.Planks.ToName());
+GoodModel[] goodsToReceive = [fabricGoodModel, brickGoodModel, plankGoodModel];
+```
+
+We've set the amount to 3 and fetched from `MB.Settings` the model, or configuration, of each good we care about. This is similar to what we did in the `Simple Effect` section above.
+
+Next, we want each of those models to be generated a GoodRef, and assign it to a hooked effect:
+
+```cs
+foreach (GoodModel goodModel in goodsToReceive)
+{
+    GoodRef goodRef = new()
+    {
+        good = goodModel,
+        amount = amountToGet
+    };
+
+    GoodsEffectModel goodEffectsModel = EffectFactory.NewHookedEffect<GoodsEffectModel>(builder);
+    goodEffectsModel.good = goodRef;
+    builder.AddHookedEffect(goodEffectsModel);
+}
+```
+
+For every good type that we care about, we got a model. And for each model, we created a GoodRef that will represent 3 of that good (e.g. 3 fabrics). We will then use the Effect Factory to create a new Hooked Effect of type `GoodsEffectModel`, which grants goods based on the Good Reference attached to it. Then, each effect is attached to the builder.
+
+In total, we now have 1 Hook and 3 Hooked Effects, each giving a single bundle of 3 items, respectively. In other words, each time the hook triggers, the 3 hooked effects apply, granting the bonus goods.
+
+Let's also add the description:
+
+```cs
+builder.SetDescription("Traders like to throw in small extras in their deals with you. " + 
+	"When selling goods worth {0} Amber to traders and trade routes, gain {1} Fabrics, Bricks and Planks" +    
+    "(The bonus is added retroactively).");
+builder.SetDescriptionArgs(
+    (SourceType.Hook, TextArgType.Amount, 0),
+    (SourceType.HookedEffect, TextArgType.Amount, 0)
+);
+```
+
+The description is similar to the Simple Hooked Effect example. We want to get the amount of goods to sell to replace the text `{0}`, and the amount of items to gain to replace the text `{1}`. Since the value gained from each hooked effect is the same for all goods, we can simply take it from the first Hooked Effect.
+
+As mentioned before, this perk is retroactive - we have set the hook as such. So we want to add this nifty text to the description of the text. this retroactive perk description shows up before you gain the perk, such as when looking at the description from order rewards or from a cornerstone selection.
+
+```cs
+builder.SetRetroactiveDescription("Expected Gain: {0}");
+builder.SetRetroactiveDescriptionArgs(
+    (HookedStateTextArg.HookedStateTextSource.TotalGainIntFromHooked, 0)
+);
+```
+
+In this case, it will append the text `"Expected Gain:"`, and substitute the `{0}` with the calculated amount of bonuses which *will be gained* from the hooked effect upon obtaining this perk. For example, if the player already sold goods worth 105 Amber in total, then it would trigger 5 times (105/20), each giving 3 fabrics, bricks and plank - for a total of 15 of each item. In that case, the text will show `Expected Gain: 15`.
+
+**Note:** The retroactive text is always encased in brackets, e.g. `(Expected Gain: 15)`. This is controlled by the system and can be removed by overriding the relevant function - but is out of the scope of this guide. Feel free to override it if you don't want it - but note that it will change all existing perks as well.
+
+Lastly, we would like to show the player their progress towards getting another instance of the goods, so they know how much more they need to sell. This is typically done in the preview text, like this:
+
+```cs
+builder.SetPreviewDescription("PROGRESS: {0}/{1}. GAINED: {2}");
+builder.SetPreviewDescriptionArgs(
+   (HookedStateTextArg.HookedStateTextSource.ProgressFloat, 0),
+   (HookedStateTextArg.HookedStateTextSource.HookAmountInt, 0),
+   (HookedStateTextArg.HookedStateTextSource.TotalGainIntFromHooked, 0)
+);
+
+```
+
+This is similar to the Simple Hooked Effect's preview in that it shows the total bonuses gained from this perk. However, we added the `PROGRESS {0}/{1}` to also denote the current progress.
+
+In this case, `{0}` is replaced with the `ProgressFloat` to show how much worth of items (remember that each item is worth its value in decimals, e.g. 0.14, so that's why we are counting progress in float), and `{1}` is replaced with the `HookAmountInt`, which is the amount `20` that we've set in the hook.
+
+This will show something along the lines of `PROGRESS: 8.42/20. GAINED: 0`, which is excellent for seeing the progress of this perk. 
+
+### Multi-Layered Hooked Effect
+
+The last example of this guide is going to be a somewhat complex perk to create, but it also really emphasizes how powerful and robust is the effect system set up by Eremite.
+
+We are going to make an effect named `Bonding Season`. Its definition is somewhat simple: each time the season changes (hook), we gain 5 Global Resolve which lasts for 120 seconds.
+
+So what makes it complex? Think of the previous Hooked Effects that we made before. Those had hooks that, when triggered, gave a permanent bonus that lasts for the entire game. However, this time we want the bonus to be timed and remove itself after 120 in-game seconds.
+
+So let's first discuss what we can do. Like Hooked Effect have the `AddHook` function, they also have the `AddRemovalHook` function. The way those hooks work is the same as `AddHook`, however instead of applying an effect for triggering them, they remove the perk that they are attached to. So we can make a perk that has a `GameTimePassedHook` removal hook that is set to 120 in-game seconds.
+
+However, the application is not quite what we want - because we don't want to lose the perk that triggers this on every season; we only want to lose the global resolve bonus after the time elapses. It should still apply again on the next season change, after all. So we need to apply a little more thought. We'll get back to this later.
+
+Additionally, liked there are Hooked Effects, there are also Instant Effects. While Hooked Effect wait for the hook to trigger to be applied, Instant Effects apply immediately when obtaining the perk. For instance, imagine a perk that gives you +1 to meat production immediately, and the bonus also increased by +1 (hooked effect) for every 70 Skewers produced (hook). This is useful when designing perks that we might want to apply without having to wait for a hook - and only once.
+
+Taking into consideration all of those capabilities, let's think what we want to do to create the Bonding Season perk:
+
+* We want to make a permanent effect that has the `SeasonChangeHook` hook. Whenever the hook triggers, we want to give an effect, which is its own instance of a perk.
+
+* That effect should have an Instant Effect of giving out resolve from the moment it is applied. In addition, it should also have a removal hook that counts seconds
+
+* Whenever that removal hook triggers, it would only take away that particular instance of that resolve bonus perk, not the seasons change hook perk.
+
+This is a little tricky, but that generally means that we have a Hooked Effect that grants another Hooked Effect when it triggers; the secondary hooked effect removes itself with its own hook when it triggers.
+
+Let's see how it translates into code. Starting with the regular stuff that we already know:
+
+```cs
+string effectName = "Bonding Season";
+string effectIconPath = "BondingSeason.jpg";
+
+HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID, effectName, effectIconPath);
+builder.SetPositive(true);
+builder.SetRarity(EffectRarity.Epic);
+builder.SetObtainedAsCornerstone();
+builder.SetAvailableInAllBiomesAndSeasons();
+builder.SetDrawLimit(1);
+builder.SetDisplayName(effectName);
+builder.SetLabel("Modded Perk");
+```
+
+Nothing special here. Let's add a hook for whenever the season changes, which the API supports:
+
+```cs
+builder.AddHook(HookFactory.OnNewSeason(SeasonTypes.All, 1)); // every season, every year
+```
+
+Let's do some preparation for the hooked effect. First, we want it to show up a separate perk when it triggers - this is typically what Eremite do in this kind of perks. This is already the case for hooked effects, but they are hidden by default. So let's make them visible on the player's HUD as a perk:
+
+```cs
+builder.EffectModel.showHookedRewardsAsPerks = true;
+```
+
+Now the player would see two effects - the permanent one and the timed one that grants the global resolve bonus.
+
+Next, we need to prepare the timed perk, the same way we do on the permanent perk:
+
+```cs
+HookedEffectBuilder resolveBonusBuilder = new(PluginInfo.PLUGIN_GUID, effectName + "_resolveHookedEffect", effectIconPath);
+resolveBonusBuilder.EffectModel.hooks = [gameTimePassedRemovalHook];
+resolveBonusBuilder.SetPositive(true);
+resolveBonusBuilder.SetRarity(EffectRarity.Epic);
+resolveBonusBuilder.SetDisplayName(effectNameName);
+resolveBonusBuilder.SetLabel("Timed Bonus - Modded Perk");
+```
+
+This timed perk has an instant effect, immediately giving its resolve bonus as long as it lives, so let's add that first:
+
+```cs
+resolveBonusBuilder.AddInstantEffect(EffectFactory.AddHookedEffect_IncreaseResolve(builder, 5));
+```
+
+And it also has a removal hook, which will remove that perk when the time elapses:
+
+```cs
+GameTimePassedHook gameTimePassedRemovalHook = Activator.CreateInstance<GameTimePassedHook>();
+gameTimePassedRemovalHook.startWithCurrentValue = false; // not retroactive, start from the current time
+gameTimePassedRemovalHook.seconds = 120f;
+resolveBonusBuilder.AddRemovalHook(gameTimePassedRemovalHook);
+```
+
+Let's add some descriptions to the timed perk to make it clear what it does:
+
+```cs
+resolveBonusBuilder.SetDescription("It's time to create bonds! Global Resolve increased by +{0} for {1} seconds.");
+resolveBonusBuilder.SetDescriptionArgs(
+    (SourceType.InstantEffect, TextArgType.Amount, 0),
+    (SourceType.RemovalHook, TextArgType.Amount, 0)
+);
+```
+
+Note the source types in each argument used to reference the proper values, referencing the instant and removal hooks, respectively.
+
+We also need to include a few properties: those are currently done manually, but will be supported by the API in a later date and handled behind the scenes:
+
+```cs
+resolveBonusBuilder.EffectModel.hooks = [gameTimePassedRemovalHook];
+resolveBonusBuilder.EffectModel.hasRemovalHooks = true;
+resolveBonusBuilder.EffectModel.hasNestedAmount = true;
+resolveBonusBuilder.EffectModel.nestedAmount = new() { source = SourceType.InstantEffect, type = TextArgType.Amount, sourceIndex = 0 };
+```
+
+The gist of those changes are:
+* The hooks list should include removal hooks for it to work properly
+* We are marking the timed Hooked Effect as having removal hooks, so the game will listen to.
+* We are marking the timed Hooked Effect as having nested amount, so the game will check for it.
+* We are setting the nested amount to the amount of resolve given by the Instant Effect that grants Global Resolve bonus.
+
+The nested amount is set in order to show a number at the bottom part of the perk icon which would make it easy for the player to see how much resolve you get from it without having to hover over it.
+
+Another thing we will do is add a timer to the timed perk until it gets removed by adding the following parameters:
+
+```cs
+resolveBonusBuilder.EffectModel.hasRemovalDynamicStatePreview = true;
+resolveBonusBuilder.EffectModel.removalDynamicPreviewText = LocalizationManager.ToLocaText(PluginInfo.PLUGIN_GUID, resolveBonusBuilder.Name, "preview", "TIME LEFT: {0}");
+resolveBonusBuilder.EffectModel.removalStatePreviewArgs = [new() { asTime = true, sourceIndex = 0, source = HookedStateTextArg.HookedStateTextSource.RemovalProgressLeftFloat }];
+```
+
+This allows to add a timer to the preview, replacing the `{0}` with the remaining time. It is set as time by adding the `asTime = true` property to the arguments. The API currently doesn't support it for now, which is why it looks a little messy. 
+
+Finally, we finished the timed perk. Now all we need to do is connect it to the parent perk, as an effect:
+
+```cs
+builder.AddHookedEffect(resolveBonusBuilder.EffectModel);
+```
+
+Lastly, we want to set up the descriptions of the parent perk:
+
+```cs
+builder.SetDescription("The strong smell in the air creates unbreakable bonds in the settlements. When the season changes, gain +{0} Global Resolve for {1} seconds.");
+builder.SetDescriptionArgs(
+    (SourceType.HookedEffect, TextArgType.NestedArg0, 0),
+    (SourceType.HookedEffect, TextArgType.NestedArg1, 0)
+);
+```
+
+Note the `NestedArgs0` and `NestedArgs1` values here. This will go into the first Hooked Effect (Source index 0), and check their first (NestedArg0) and second (NestedArg1) dynamic descriptions arguments and return their values. This lets you dive deeper into a nested effect - in this case it's the timed effect - and get their values for the description, which you can put into the parent effect to show the expected values.
+
+Since this Hooked Effect is complex, feel free to go to [the full example](https://github.com/Shushishtok/AtS-my-first-mod/blob/master/CustomCornerstones.cs#L54-L107) to see all the pieces.
+
+You should now be able to build and run this perk to see it at work.
+
+This should be a proper introduction into effects and their powers. Feel free to discuss with us on the our modding Discord if you need any assistance.
+
+
+# More subjects to come soon!
+
+This might take some time as we are figuring out how things work though. If you have any requests, let us know.
+
+We plan to eventually release guides for:
+
+* Configuring Existing Traders
+* Custom Traders
+* Custom Goods
+* Configuring Goods
+* Custom Buildings
+* Custom Glade Events
+* ...and more!
