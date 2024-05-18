@@ -2,7 +2,7 @@
 
 Hello there, viceroy! So you decided to try your hand in modding Against The Storm? The Queen will surely be pleased! Be prepared to embark in an incredible journey, where you will settle the land, the sea and the sky!
 
-In all seriousness, we are glad that you decided to join our modding community and add your little twists to the already incredible game. It can be adding new stuff that don't exist, rebalancing of existing contents in the game, or maybe completely changing how the game works. Everything is possible, though some tasks may be easier than others. Remember to start simple and go from there.
+In all seriousness, we are glad that you decided to join our modding community and add your little twists to this already incredible game. It can be adding new stuff that don't exist yet, rebalancing existing contents in the game, or maybe completely changing how the game works. Everything is possible, though some tasks may be easier than others. Remember to start simple and go from there.
 
 Before you begin the process, if you aren't in the AtS modding Discord yet, feel free to join us by clicking on [this Discord invite](https://discord.com/invite/AdzCf5uzNv).
 
@@ -18,40 +18,40 @@ In order to start modding, there are a few things that you need, which are liste
 You must have a copy of Against The Storm. This guide assumes you have a copy of it from Steam, though it might work similarly if you got it from other sources such as GamePass or GoG. Feel free to discuss this with the community in the Discord.
 
 ## Visual Studio 2022
-As the code is written in C# and managed via a C# project, Visual Studio 2022 is an excellent IDE (programming tool) for modding Against The Storm. You will write C# as well as be able to look at the game's code. 
+As the code is written in C# and managed via a C# project, Visual Studio 2022 is an excellent IDE (programming tool) for modding Against The Storm. You will write C# as well as be able to look at the game's code by using this tool. 
 
 Get it for free at [the official Visual Studio website](https://visualstudio.microsoft.com/downloads/). Be sure to download the Community version which is always free.
 
 ## dnSpy
-This is a tool that can look at assemblies and make readable code from them. Assemblies are the result of building an entire codebase, resuling in a single file with the .dll extension. This will make it possible to see Against The Storm's codebase in order to tweak it or add to it. 
+This is a tool that can look at assemblies and make readable code from them. Assemblies are the result of building an entire codebase, resuling in a single file with the .dll extension. This will make it possible to see Against The Storm's codebase in order to tweak it or add to it. Eventually we will export Against The Storm's code by using its export feature.
 
-Get it at [dnSpy's GitHub](https://github.com/dnSpy/dnSpy/releases). You would usually want to get the *dnSpy-net-win64.zip* file in the latest release. Extract the zip's contents into a folder that you can easily get to.
+Get it at [dnSpy's GitHub](https://github.com/dnSpy/dnSpy/releases). You would usually want to get the *dnSpy-net-win64.zip* file in the latest release. Extract the zip's contents into a folder that you can easily get to later on.
 
 ## Thunderstore Mod Manager
-Though this application is technically not required in order to mod, I highly recommend using this. This allows you to automatically switch between modded and vanilla versions of the game (if you ever want to just play it without mods), and it can manage additional mods or libraries, making sure they're up to date and are set in the correct place. This guide assumes that you use this. If you don't want to, you can discuss with our modding community in Discord for steps regarding this.
+Though this application is technically not required in order to mod, we highly recommend using this. This allows you to automatically switch between modded and vanilla versions of the game (if you ever want to just play it without mods), and it can manage additional mods or libraries, making sure they're up to date and are set in the correct place. This guide assumes that you use this manager. If you don't want to, you can discuss with our modding community in Discord for steps regarding this.
 
 Get it at [the official Thunderstore Mod Manager website](https://www.overwolf.com/app/thunderstore-thunderstore_mod_manager).
 
 ## Modding Template
 
-This template is excellent for setting up common procedures across all mods, and is used as a great starting point. It is recommended to use it, as you can get right to modding after doing slight tweaks on it to match your mod.
+This template is excellent for setting up common procedures across all mods, and is used as a great starting point. It is recommended to use it, as you can get right to modding after doing slight tweaks on it to match your mod's properties.
 
-Get it at [ATS Mod Template Github page](https://github.com/ats-mods/ModTemplate). You can take it by clicking on the green "Code" button, then clicking "Download ZIP". Extract it to a folder of your choice. This is where you'll work on your mod.
+Get it at [ATS Mod Template Github page](https://github.com/ats-mods/ModTemplate). You can download it by clicking on the green "Code" button, then clicking "Download ZIP". Extract it to a folder of your choice. This is where you'll work on your mod.
 
 # First Steps
-Once everything's installed, we want to make a few things to prepare our modding codebase. Once we'll have a good base, we can go from there and start adding our stuff.
+Once everything's installed, we want to do a few things to prepare our modding codebase. Once we'll have a good base, we can go from there and start adding our stuff.
 
-There are a few things to tweak here, but you only need to do those once, so bear with me.
+There are a few things to tweak here, but you only need to do those once, so bear with us.
 
 ## Setting Up Thunderstore Mod Manager
 
-Open the Thunderstore Mod Manager. The first time it opens, it will show a list of games and a search bar. Type "Against The Storm" in the search bar so it will narrow the list of games to the one we want, then hover on it and click on "Select Game" that appears. 
+Open the Thunderstore Mod Manager. The first time it opens, it will show a list of games and a search bar. Type "Against The Storm" in the search bar so it will narrow the list of games to the one we want, then hover on it and click on the "Select Game" button that appears. 
 
-You will be moved to a profile selection page for this game, which has a profile named "Default". You can use this one or create a profile for modding. Regardless, click on the desired profile, then click on the "Select Profile" button.
+You will be moved to a profile selection page for this game, which has a profile named "Default". You can use this one or create a profile for modding. Regardless, click on the desired profile, then click on the "Select Profile" button. For simplicity's sake, this guide will assume you are using the "Default" profile.
 
-You are now in the page for managing Against The Storm. Here, click on "Get mods", which will give you a list of all existing mods in Against The Storm. You should find and download the **BepInExPack** mod and the **API** mod. The former enables modding capabilities on Against The Storm's codebase, while the latter adds a powerful library for managing all contents in the game. You will also be notified when said mods are updated and be able to update it easily.
+You are now in the page for managing Against The Storm. Here, click on the "Get mods" tab on the left side of the screen, which will give you a list of all existing mods in Against The Storm. You should find and download the **BepInExPack** mod and the **API** mod. The former enables modding capabilities on Against The Storm's codebase, while the latter adds a powerful library for managing all contents in the game. You will also be notified when said mods are updated and be able to update it easily.
 
-**NOTE:** mods are downloaded to `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\<your profile name>`. You will find the BepInEx folder in it.
+**NOTE:** mods are downloaded to `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\Default`. You will find the BepInEx folder in it.
 
 ## Setting Up the Modding Template
 
@@ -59,7 +59,7 @@ Open Visual Studio 2022, then click on "Open a local folder". Find the folder wh
 
 Find the "Solution Explorer" window - which by default starts on the right side of the screen. This lists all files in the folder. 
 
-Inside the Solution Explorer, find the `ModTemplate.csproj` file and double click on it. This opens a file with properties that look like XML that describe the project and its behavior. If you don't know XML is, it is recommended to take a short read at the [W3School XML Tutorial](https://www.w3schools.com/xml/).
+Inside the Solution Explorer, find the `ModTemplate.csproj` file and double click on it. This opens a file with properties that look like XML that describe the project and its behavior. If you don't know what XML is, it is recommended to take a short read at the [W3School XML Tutorial](https://www.w3schools.com/xml/).
 
 Find the `<PropertyGroup>` field, which houses a few properties in it. We will work inside it to define a few properties about your mod.
 
@@ -67,11 +67,11 @@ Find the `<AssemblyName>` field and replace its value from `ModTemplate` to what
 
 Find the `<Description>` field and replace its value from `Example Mod for Against The Storm` to anything that would describe your mod.
 
-Add a new line inside the `<PropertyGroup>` field. In it, add the line `<StormPath>C:Program Files (x86)\\Steam\\steamapps\\common\\Against the Storm</StormPath>`. If the path written in the value does not match where your copy of Against The Storm is installed, change it accordingly to match. This will tell your compiler where your Against The Storm's codebase is in.
+Add a new line inside the `<PropertyGroup>` field. In it, add the line `<StormPath>C:\\Program Files (x86)\\Steam\\steamapps\\common\\Against the Storm</StormPath>`. If the path written in the value does not match where your copy of Against The Storm is installed, change it accordingly to match. This will tell your compiler where your Against The Storm's codebase is in.
 
-Add another line inside the `<PropertyGroup>` field. In it, add the line `<BepInExPath>C:\\Users\\<your_windows_user>\\AppData\\Roaming\\Thunderstore Mod Manager\\DataFolder\\AgainstTheStorm\\profiles\\<your_profile_name></BepInExPath>`. You'll have to replace `<your_windows_user>` with your PC user (name of the user you use to log in) and `<your_profile_name>` with your Thunderstore Mod Manager profile name. If you didn't create a profile, this would be "Default". This is where we installed BepInEx at the previous step.
+Add another line inside the `<PropertyGroup>` field. In it, add the line `<BepInExPath>C:\\Users\\<your_windows_user>\\AppData\\Roaming\\Thunderstore Mod Manager\\DataFolder\\AgainstTheStorm\\profiles\\Default</BepInExPath>`. You'll have to replace `<your_windows_user>` with your PC user, which is the name of the user you use to log in to your PC. This is where we installed BepInEx at a previous step.
 
-Lastly, find the field `<Target Name="Deploy" AfterTargets="Build">`. Inside of it, find the two `<Copy>` fields. Replace `$(StormPath)` with `$(BepInExPath)`. We need to do this because the Mod Template assumed we'll install BepInEx in the same place as Against The Storm, but we installed it via the Thunderstore Mod Manager. Doing this correctly adjusts the path to where BepInEx is installed.
+Lastly, find the field `<Target Name="Deploy" AfterTargets="Build">`. Inside of it, find the two `<Copy>` fields. Replace the string `$(StormPath)` with `$(BepInExPath)` in each of those values. We need to do this because the Mod Template assumed we'll install BepInEx in the same place as Against The Storm, but we installed it via the Thunderstore Mod Manager. Doing this correctly adjusts the path to where BepInEx is installed.
 
 You are now finished. To build this, click on File -> Open -> Project/Solution, then browse and find `ModTemplate.csproj`. Select it and click "OK". This will open the `ModTemplate` project in Visual Studio, where before we only viewed the folder. You can now press Shift-F6, or click on Build -> Build ModTemplate. If everything went well, you should see output at the bottom which would look like this:
 
@@ -83,7 +83,7 @@ You are now finished. To build this, click on File -> Open -> Project/Solution, 
 
 If there are errors here, retract the steps above and fix accordingly. If the errors persist, feel free to request assistance in our modding Discord.
 
-Otherwise, if there are no errors, then you should be able to go to where BepInEx is installed (by default, at `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\<your profile name>`), then go into the BepInEx -> plugins folder. Inside, you should see a .dll file with your chosen mod's name (e.g. `MyFirstMod.dll`). If you do, you have successfully set up the project!
+Otherwise, if there are no errors, then you should be able to go to where BepInEx is installed, which by default, is at `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\Default`. Then go into the BepInEx -> plugins folder. Inside, you should see a .dll file with your chosen mod's name (e.g. `MyFirstMod.dll`). If you do, you have successfully set up the project!
 
 ## Setting up BepInEx console
 
@@ -98,11 +98,11 @@ Go to your Thunderstore Mod Manager folder (by default: `C:\Users\<your username
 Enabled = false
 ```
 
-Change `Enabled = false` to `Enabled = true` to enable the console. From now on, whenever BepInEx runs, it will also open a console that you can use to look for issues and track your code.
+Change `Enabled = false` to `Enabled = true` to enable the console and save. From now on, whenever BepInEx runs, it will also open a console that you can use to look for issues and track your code.
 
 ## Testing The Mod
 
-Now we are ready to check if Against The Storm is ready to perform with our mod. Open Thunderstore Mod Manager app and navigate to your game. If you click on the blue "Modded" button, the game will run with BepInEx, which will apply your mod. You should see two windows open the same time - one for Against The Storm itself, and one for BepInEx console. 
+Now we are ready to check if Against The Storm is ready to perform with our mod. Open Thunderstore Mod Manager app and navigate to your game. If you click on the blue "Modded" button at the top section of the application, the game will run with BepInEx, which will apply your mod. You should see two windows open the same time - one for Against The Storm itself, and one for BepInEx console. 
 
 As the template has already set up some prints, we can immediately check to see if they are properly loaded. If you can see the log `Plugin <your mod's name> is loaded!`, it worked! You have now modded the game.
 
@@ -111,7 +111,7 @@ As the template has already set up some prints, we can immediately check to see 
 
 ## Adding Dependencies
 
-In order for your mod to be usable and reference code from Against The Storm's codebase, your project uses dependencies. The Mod Template already adds one dependency by default, which can be visible from Visual Studio's `Dependencies` expandable list. We would like to add other libraries that we care about for modding, which are divided into two types in total: Unity libraries and the ATS API library.
+In order for your mod to be usable and reference code from Against The Storm's codebase, your project uses dependencies. The Mod Template already adds one dependency by default, which can be visible from Visual Studio's `Dependencies` expandable list on the Solution Explorer. We would like to add other libraries that we care about for modding, which are divided into two types in total: Unity libraries and the ATS API library.
 
 ### Unity Libraries
 
@@ -128,22 +128,22 @@ When all of those dll files are selected, click on "Add", then "OK". Visual Stud
 
 ### API Library
 
-The API library, developed by a fellow modder, is an expanding and developing library intended to make our modding lives easier by abstracting actions commonly done in modding. It has excellent support for adding new goods, traders, perks and cornerstones, and will add more as the time goes. [This wiki](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/WIKI.md) can provide more info on existing capabilities if you are interested.
+The API library, developed by a fellow modder [James](https://github.com/JamesVeug), is an expanding and developing library intended to make our modding lives easier by abstracting actions commonly done in modding. It has excellent support for adding new goods, traders, perks and cornerstones, and will add more as the time goes. [This wiki](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/WIKI.md) can provide more info on existing capabilities if you are interested.
 
-Regardless, no harm in setting up the dependency now in case you will want to use it. Right click on the `Dependencies` expandable list in Visual Studio, then click Add Project Reference. Click on "Browse..." to browse to Thunderstore Mod Manager (by default: `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\<your profile name>`), then go to BepInEx -> plugins -> ATS_API_Devs-API. Choose the API.dll and press "Add".
+Regardless, no harm in setting up the dependency now in case you will want to use it. Right click on the `Dependencies` expandable list in Visual Studio, then click Add Project Reference. Click on "Browse..." to browse to Thunderstore Mod Manager (by default: `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\Default`), then go to BepInEx -> plugins -> ATS_API_Devs-API. Choose the `API.dll` file and press "Add".
 
 
 ## Understanding BepInEx and Harmony
 
-One of the main things you want to do when modding Against The Storm is changing existing code in some way. This will be done either by preventing functions from running, doing something right before they run, or doing something after they run. For example, if we wanted the a certain blueprint to always appear in the first draw, we'll have to find the function that generates random blueprints for the game, and then override it with our function which will return the blueprint we want instead of the random ones.
+One of the main things you want to do when modding Against The Storm is changing existing code in some way. This will be done either by preventing functions from running, doing something right before they run, or doing something after they run. For example, if we wanted a certain blueprint to always appear in the first draw, we'll have to find the function that generates random blueprints for the game, and then override it with our function which will return the blueprint we want instead of the random ones.
 
-This is where BepInEx and Harmony come together. BepInEx uses Harmony as a tool to allow it to control the flow of the existing codebase. You can read the [official Harmony documentation](https://harmony.pardeike.net/articles/intro.html) for the full information, but instead, let's look at two main use cases:
+This is where BepInEx and Harmony come together. BepInEx uses Harmony as a tool to allow it to control the flow of the existing codebase. You can read the [official Harmony documentation](https://harmony.pardeike.net/articles/intro.html) for the full information if you are interested. For this guide, we will focus on two main use cases:
 
 ### Harmony Prefix
 
-A prefix is a function that gets run before (pre) a certain method. Whenever that method is called, that function gets called instead. It must always return a boolean result, which determines whether the original method will be run after the function ends, or gets completely skipped and ignored. It can be useful to skip functions if you plan to completely override it.
+A prefix is a function that gets run before (**pre**) a certain method. Whenever that method is called, that function gets called instead. It must always return a boolean result, which determines whether the original method will be run after the function ends, or gets completely skipped and ignored. It can be useful to skip functions if you plan to completely override it.
 
-For example, let's say that we want to change the duration of the seasons. I want seasons to be much shorter. After a bit of looking around the existing codebase (which I will explain later in this guide how to do so effectively), we found the following function:
+For example, let's say that we want to change the duration of the seasons. I want seasons to be much shorter. After a bit of looking around the existing codebase (which we will explain later in this guide how to do so effectively), we found the following function:
 
 ```cs
 protected void SetUpSeasons(BiomeModel biome)
@@ -156,7 +156,7 @@ protected void SetUpSeasons(BiomeModel biome)
 
 This seems to get a biome, which has a `seasons` key, that hold the `DrizzleTime`, `ClearanceTime` and `StormTime`. Those variables are assigned to something called conditions, probably conditions of a game run. This is a method in the a class named `BaseConditionsCreator`. We could override it, so it would instead take our values.
 
-Each Harmony related function must have two annotations which describe its behavior. First, the `HarmonyPatch` annotation, which describes which method is patching, or overriding in our case. Second, the `HarmonyPrefix` annotation, which denotes that this is a *prefix*, which would happen *before* `SetUpSeason` gets to run.
+Each Harmony related function must have two annotations which describe its behavior. First, the `HarmonyPatch` annotation, which describes which method it is patching, or overriding in our case. Second, the `HarmonyPrefix` annotation, which denotes that this is a *prefix*, which would happen *before* `SetUpSeason` gets to run.
 
 ```cs
 [HarmonyPatch(typeof(BaseConditionsCreator), nameof(BaseConditionsCreator.SetUpSeason))]
@@ -167,9 +167,9 @@ private static bool SetUpSeasons_PrePatch(BaseConditionsCreator __instance)
 }
 ```
 
-In the above example, the first annotation, `HarmonyPatch`, it is described to take the `BaseConditionsCreator` class and find a method named `SetUpSeason`. The second annotation denotes it is a prefix. Then the function signature itself is a static function that returns a boolean. 
+In the above example, the first annotation, `HarmonyPatch`, is configured to access the `BaseConditionsCreator` class and patch a method named `SetUpSeason`. The second annotation denotes it is a prefix. Lastly, the function signature itself, which is a static function that returns a boolean. 
 
-It is also important to note that Harmony provides the unique `__instance` parameter, which is used as the actual instance of the class being overridden. This is useful if we want to assign or fetch values from it.
+It is also important to note that Harmony provides the unique `__instance` parameter, which is the actual instance of the class being overridden. This is useful if we want to assign or fetch values from it.
 
 Currently, this prefix does nothing except returning false. What that means is that the original method, `SetUpSeason` will not run, but also, it was overridden by nothing. This is likely to cause issues, as the game expects to know how long the seasons are going to last for. Let's fix that by adding our own values:
 
@@ -190,17 +190,17 @@ We're now basically doing what the original method did, but with a few differenc
 
 If we would start a new settlement in Against The Storm, our seasons should be a lot shorter now than usual.
 
-**NOTE:** Be careful of using this method. If the game is updated and the logic changes, your prefix will not have the changes applied, as it overrides whatever the code in the original function has. This can cause the game to crash or error out after an update. Handle with caution.
+**NOTE:** Be careful of using this method. If the game is updated and the logic changes, your prefix will not have the changes applied, as it overrides whatever the code is in the original function. This can cause the game to crash or error out after an update. Handle with caution.
 
 ### Harmony Postfix
 
-A postfix is a function that runs after (post) a certain method, but before other functions that called it can get its result. It is mostly useful for two things: doing things in addition to what the original code does, or changing the result of the function before it can be returned.
+A postfix is a function that runs after (**post**) a certain method, but before other functions that called it can get its result. It is mostly useful for two things: doing things in addition to what the original code does, or changing the result of the function before it can be returned.
 
 The `Plugin.cs` file in the Mod Template comes out of the box with a couple of postfixes. In the function named `HookEveryGameStart`, we can see a Postfix annotation using a class named `GameController`, patching the `StartGame` method inside of it. This is an excellent use case of it, as that means we can now listen to every instance of a player starting a game, and do something right when the game starts, such as granting a bonus effect or giving them goods.
 
-Let's take an additional example though. Let's say that we want all perks in the game to have a description that starts with "[MODDED]". For the sake of the example, I'm ignoring localization, pretending there's only English to worry about.
+Let's take an additional example. Let's say that we want all perks in the game to have a description that starts with "[MODDED]". For the sake of the example, we will be ignoring localization, pretending there's only the English language to worry about.
 
-Scanning the code, I can find that all perks are effects using the `EffectModel` class. Every effect has a method named `GetFullDescription`, which returns a string with the effect's description. We can patch that and edit the result after it's determined.
+Scanning Against The Storm's codebase, we can find that all perks are effects using the `EffectModel` class. Every effect has a method named `GetFullDescription`, which returns a string with the effect's description. We can patch that and edit the result after it's determined.
 
 Like with the Prefix, we use similar annotations, like this:
 
@@ -226,23 +226,25 @@ private static void EffectModel_GetFullDescription_Postfix(ref string __result)
 
 As `__result` holds the full description, we can assign it a new string made from the word "[MODDED]" and then appending the actual description. This will trigger every time the game would try to get the description of an effect.
 
+Controlling Harmony properly allows you to have a strong control over the game's behavior with your mods.
+
 ### Using dnSpy to Export AtS Codebase
 
 Whenever you want to make a change, you first need to understand how things currently work. For that, you'll need to be able to effectively look at the current Against The Storm's codebase and search in it. We'll use dnSpy to both open the compiled C# code and export it as a project that we can load into Visual Studio.
 
-Open dnSpy.exe that you downloaded in the above section. The application opens. Click on File -> Open, and navigate to your Against The Storm's installation folder. Go into `Against the Storm_Data` -> `Managed` folder, then find and select `Assembly-CSharp.dll` to open it. This will load the codebase into the DLL, and if you'll expand it you'll be able to see the code in decompiled form.
+Open the `dnSpy.exe` file that you downloaded in the above section. The application opens. Click on File -> Open, and navigate to your Against The Storm's installation folder. Go into `Against the Storm_Data` -> `Managed` folder, then find and select `Assembly-CSharp.dll` to open it. This will load the codebase from the DLL, and if you'll expand it you'll be able to see the code in decompiled form.
 
-However, from my experience, the search in dnSpy is not great, so we will defer to Visual Studio's search instead. Click File -> Export to Project. Select a folder to export it to (not inside your mod's folder!). Uncheck the "Solution" checkbox. Set the Visual Studio to VS2019. Keep everything else the same and press Export.
+However, from our experience, the search in dnSpy is not great, so we will defer to Visual Studio's search instead. Click File -> Export to Project. Select a folder to export it to (not inside your mod's folder!). Uncheck the "Solution" checkbox. Set the Visual Studio to VS2019. Keep everything else the same and press Export.
 
 When it finishes, you can close dnSpy. You'll find a new folder named `Assembly-CSharp` in the place you selected. Open your mod in Visual Studio, then click on File -> Add -> Existing Project. Navigate to the `Assembly-CSharp` folder and find the file `Assembly-CSharp.csproj`. Open it to have both projects open at the same time. 
 
-You can now expand the `Assembly-CSharp` project in Visual Studio's Solution Explorer and see the entire codebase for the game. This is a bit of a massive codebase, so make to ease into it to not be overwhelmed.
+You can now expand the `Assembly-CSharp` project in Visual Studio's Solution Explorer and see the entire codebase for the game. This is a bit of a massive codebase, so make sure to ease into it to not be overwhelmed.
 
-Now, if you'll press CTRL+SHIFT+F, this will open the "Find in Files" window, which will find all instances of your search parameters across the entire codebase. Try searching a few values such as "drizzle" - you should be able to see a ton of search results, which can help slowly figuring out the codebase in relevant areas. This will definitely come in handy.
+Now, if you'll press CTRL+SHIFT+F in Visual Studio, this will open the "Find in Files" window, which will find all instances of your search parameters across the entire codebase. Try searching a few values such as "drizzle" - you should be able to see a ton of search results, which can help slowly figuring out the codebase in relevant areas. This will definitely come in handy.
 
 ### Adding New Game Mechanics
 
-Let's imagine we want to make a new simple mechanic where you will always start a game with a Wildcard blueprint that you can choose. For that we'll have to search for "wildcard" and look for something that gives a wildcard - as we know there's a cornerstone that does it in the game, so there's probably logic for it somewhere. If we'd look at the functions in the search results, there's one that sounds suspiciously like what we want: `public void GrantWildcardPick(int amount)`.
+Let's imagine we want to make a new simple mechanic where the player will always start a game with a Wildcard blueprint that you can choose. For that we'll have to search for "wildcard" and look for something that gives a wildcard - as we know there's a cornerstone that does it in the game, so there's probably logic for it somewhere. If we'd look at the functions in the search results, there's one that sounds suspiciously like what we want: `public void GrantWildcardPick(int amount)`.
 
 That sounds like a name of a method that grants X amount of wildcard picks. That's pretty good! Let's try to use this. Now we just need to find the appropriate place to put it. Since we want the logic to apply when the game starts, we will have to look for the logic that starts a game. Fortunately, this comes with the template! Open `plugin.cs` and find the function named `HookEveryGameStart`. Seems like it's a Harmony Postfix that runs after the game starts. Exactly what we need. Seems like it also comes with a `isNewGame` check, which we can guess that returns `true` if we started a new settlement, or `false` if we continue from an existing settlement. So let's make a simple if check:
 
@@ -253,7 +255,7 @@ if (isNewGame)
 }
 ```
 
-Now we need to call the `GrantWildcardPick` function we found before. It seems to belong to the `EffectsService` class. Services are classes initialized by the game which hold information, references and methods to control the game logic in various ways. During an active game (even a game that just started), they are held in a class named `SO`, which we can access from mostly anywhere. This class grants us access all services that were initialized as part of the game. From it we can access `EffectsService`, which holds the `GrantWildcardPick` method that we want to call.
+Now we need to call the `GrantWildcardPick` function we found before. It seems to belong to the `EffectsService` class. Services are classes initialized by the game which hold information, references and methods to control the game logic in various ways. During an active game (even a game that just started), they are held in a class named `SO`, which we can access from mostly anywhere. This class grants us access to all services that were initialized as part of the game. From it we can access `EffectsService`, which holds the `GrantWildcardPick` method that we want to call.
 
 Let's add it to our code:
 
@@ -264,7 +266,7 @@ if (isNewGame)
 }
 ```
 
-We can also put a log which would make it easier to see when it triggered. We can use our plugin's `Logger` to do so. However, because `HookEveryGameStart` is a static function, we'll have to access the instance from a static parameter:
+We can also put a log which would make it easier to see when it triggered. We can use our plugin's `Logger` to do so. However, because `HookEveryGameStart` is a static function, we'll have to access the instance from a static parameter.
 
 Our final code should look like this:
 
@@ -286,13 +288,13 @@ Feel free to mess around with the code, but try to stay simple for now - it is e
 
 A common theme in modding is rebalancing the existing content and maybe mixing things up. This is done by finding existing content and tweaking their values before they take effect in a game.
 
-Before we begin - a word of caution. If you change things too much, saved games will fail to load and will corrupt a save that was loaded with previous values. Make sure to start a new settlement when values change. When your mod is published, make sure to let your players know to end their current settlement, if any, before they update your mod to a newer version that changes values around.
+Before we begin - a word of caution. If you change things too much, saved games will fail to load and will corrupt saves that were loaded with previous values. Make sure to start a new settlement when values change. When your mod is published, make sure to let your players know to end their current settlement, if any, before they update your mod to a newer version that changes values around.
 
 Let's say we want to make a simple change where Shelters only cost 5 Wood to construct instead of the usual 10 Wood. For that we'll have to find the Shelter's building configuration - or as they're called in the code - models. A model is a bunch of configurations that belong to a single entity, like a building in our case, that you can make infinite copies of, such as Shelters.
 
 First, we need to find out the Shelter's internal ID. This will allow us to be able to reference it. The simplest way to do it is to print each building as a log and find the one we care about. 
 
-Open `plugin.cs` and find the method `HookMainControllerSetup`. It is an Harmony Postfix that triggers after `MainController.OnServicesReady` finishes running. This is a good time to add such changes, as we'll need the game's content to be initialized.
+Open `plugin.cs` and find the method `HookMainControllerSetup`. It is an Harmony Postfix that triggers after `MainController.OnServicesReady` finishes running. This is a good time to add such changes, as we'll need the game's content to be initialized and stored in the game's various services.
 
 Unlike `SO` that we referenced before, we will now reference the `MB` class. It holds all of the game's configurations and settings, without it being related to a specific run.
 
@@ -305,25 +307,25 @@ foreach(BuildingModel buildingModel in MB.Settings.Buildings)
 }
 ```
 
-Note: `name` is the internal name (or ID) used to identify a specific model, which `display name` is the localized (to your game's language) name.
+Note: `name` is the internal name (or ID) used to identify a specific model, whereas `display name` is the name of the building, localized to a language based on your game's language settings.
 
 If we'll build and run the game now, we'll get a log for each building model in the game. For example:
 
 `[Info   :MyFirstMod] Found building with name: Sealed Biome Shrine and display name Beacon Tower`
 
-We can make the code only print things that have "Shelter" in their name, but for now, let's skip ahead and have the log that we want:
+We'll look at the logs until we find the log that we want:
 
 `[Info   :MyFirstMod] Found building with name: Shelter and display name Shelter`
 
-Easy enough. Now that we know the internal name of the building, we can request that specific model and access it. Then we'll be able to directly manipulate its values. So what exactly are we doing? We want to find the configuration that determines the build cost of the Shelter. Looking at the BuildingModel class, we can find the following public field: `public GoodRef[] requiredGoods;`. It seems to be a list of GoodRefs (references to actual instances of goods). We can assume that if we'll log them, we'll find a single GoodRef of "10 wood", as it is the only good required to construct the building. So for the building to cost 5 Wood, we just need to tweak this reference. Let's try it out:
+Now that we know the internal name of the building, we can request that specific model and access it. Then we'll be able to directly manipulate its values. So what exactly are we doing? We want to find the configuration that determines the build cost of the Shelter. Looking at the `BuildingModel` class, we can find the following public field: `public GoodRef[] requiredGoods;`. It seems to be a list of GoodRefs (references to actual instances of goods). We can assume that if we'll log them, we'll find a single GoodRef of "10 wood", as it is the only good required a Shelter. So for Shelters to cost 5 Wood, we just need to tweak this reference. Let's try it out:
 
 ```cs
 BuildingModel shelterModel = MB.Settings.GetBuilding("Shelter");
-GoodRef woodRef = shelterModel.requiredGoods[0]; // we know there's only one, so it's definitely the reference to wood
+GoodRef woodRef = shelterModel.requiredGoods[0]; // we know there's only one, so it's definitely the reference to an instance of "X Wood".
 woodRef.amount = 5;
 ```
 
-Basically, we made it so the reference to a good is an instance of "5 wood" - which is used here as the price of the building.
+We have now made it so the reference to a good is an instance of "5 wood" - which is used here as the cost of the Shelter in order to construct it.
 
 Build the project as usual and launch the game. Go into a settlement and check if Shelters now cost 5 wood. If so, success!
 
@@ -331,14 +333,14 @@ It's important to note that the end code is usually very short and simple - but 
 
 ### Hands-On Challenge: Give Yourself a Perk
 
-Even though this is a guide, I think the best way to get things to connect is to actually try and do something for yourself. If you wish, do the following challenge. Otherwise, skip to the solution in the next section. This will be useful later for debugging effects.
+Even though this is a guide, I think the best way to get things to connect is to actually try and do something for yourself. If you wish, do the following challenge. Otherwise, skip to the solution in the next section. This will be useful later for debugging perks.
 
 To complete the challenge, give the player on game start the perk "Woodcutter's Song". Its internal name (ID) is `Resolve for Glade`.
 
 Hints:
 * No Harmony overrides are necessary for this challenge.
 * Use the internal ID to fetch the perk configuration. Think where it would reside.
-* Remember: perks are actually just effects behind the scenes.
+* Remember: perks are a type of effect, and is bundled in with other types of effects in the code.
 * Check the model of the effect. It might contain a useful method to complete the challenge!
 
 ### Hands-On Challenge Solution
@@ -362,7 +364,7 @@ resolveEffect.AddAsPerk();
 Instance.Logger.LogInfo("Got the Resolve for Glade perk.");
 ```
 
-After building and running this, you should have the perk Woodcutter's Song as a perk on the bottom left of the screen.
+After building and running this, you should have the perk Woodcutter's Song as a perk on the bottom left of the screen when you begin a new settlement.
 
 </details>
 
@@ -370,13 +372,13 @@ After building and running this, you should have the perk Woodcutter's Song as a
 
 Until now we didn't use the ATS API library at all. We referenced actual code, overridden or added some parts of the game's code. This is great when we want to tweak the game's logic or change existing content.
 
-The ATS API library is intended to make some actions abstract, by taking care of the handling of a bunch of complicated actions. As it grows, new things will be added to it. At the time of writing this guide, its major part is by helping us creating new content, such as perks, cornerstones, goods, traders, and more! If you have any ideas or requests, feel free to tell us in the modding Discord!
+The ATS API library is intended to make some actions abstract, by taking care of the handling of a bunch of complicated actions. As it grows, new things will be added to it. At the time of writing this guide, its major part is by helping us creating new content, such as perks, cornerstones, goods, traders, and more! If you have any ideas or requests, feel free to tell us in the modding Discord.
 
 ## Effects
 
 Almost anything that modifies the game in any way is an Effect. Forest Mysteries, Glade Events (both consequences and working effects), cornerstones and perks are all effects that the player gets in various ways. Some are instant, while some are continuous effects, applying their logic constantly.
 
-In this section, we'll learn how to create new effects from scratch by using the ATS API. Note that we'll need icons in size of 128x128. If you don't have any, feel free to take them from the [Asset Folder](https://github.com/Shushishtok/AtS-my-first-mod/tree/master/Assets) of this repository.
+In this section, we'll learn how to create new effects from scratch by using the ATS API. Note that we'll need icons in size of 128x128 pixels. If you don't have any, feel free to take them from the [Asset Folder](https://github.com/Shushishtok/AtS-my-first-mod/tree/master/Assets) of this repository.
 
 New effects must be created before the services are initialized but after references are initialized, so the best place to put them are in the following Harmony method:
 
@@ -395,7 +397,7 @@ Copy this method and put it somewhere in `Plugin.cs`. Write the examples below i
 
 Let's begin with a simple effect. We will need two things for this effect to work. 
 
-First, we need an Effect Model. Eremite has a lot of predefined Effect Models that handle logic so we won't have to, which is nice. The list of models can be found [here](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/EFFECTS.md). Most of those Effect Model's behavior is self explanatory from their name. For some, we'll still need to test and see how they work. For now, let's pick an easy one: the `GoodsPerMinEffectModel` model. As its name might suggest, it gives the player X goods every minute. We decide how many and what good when we define the model.
+First, we need an Effect Model. Eremite has a lot of predefined Effect Models that handle logic so we won't have to, which is nice. The list of models can be found [here](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/EFFECTS.md). Most of those Effect Models' behavior is self explanatory from their name. For some, we'll still need to test and see how they work. For now, let's pick an easy one: the `GoodsPerMinEffectModel` model. As its name might suggest, it gives the player X goods every minute. We decide how many and what good when we define the model.
 
 Second, we need a reference to the Good that we want to get every minute. The reference will define what Good will be given to the player and its amount.
 
@@ -420,15 +422,15 @@ GoodRef insectGoodRef = new() { good = insectGoodModel, amount = amount };
 
 Note that we used an enum named `GoodTypes`, which comes from the ATS API, and is used to make our lives easier so we won't have to guess the internal name of the Good - in this case - Insects.
 
-Next, we will create an "effect builder". This is where the ATS API comes in - this is a custom builder that manages most of the properties of the effects easily. When we create an effect builder, we must tell it what type of effect we're building. So we'll do that as follows:
+Next, we will create an "effect builder". This is where the ATS API comes in - this is a custom builder that manages most of the properties of the effects for us. When we create an effect builder, we must tell it what type of effect we're building. So we'll do that as follows:
 
 ```cs
 EffectBuilder<GoodsPerMinEffectModel> builder = new(PluginInfo.PLUGIN_GUID, effectName, effectIconPath);
 ```
 
-There are a few things to note here. First, the EffectBuilder is of type `GoodsPerMinEffectModel`, which is the effect model we wanted to use. Its constructor accepts 3 parameters: the mod's name (which is automatically stored in `PluginInfo.PLUGIN_GUID`), the effect's name, and the path to the effect's image (relative to the Assets folder in your project).
+There are a few things to note here. First, the EffectBuilder is of type `GoodsPerMinEffectModel`, which is the effect model we wanted the builder to use. Its constructor accepts 3 parameters: the mod's name (which is automatically stored in `PluginInfo.PLUGIN_GUID`), the effect's name, and the path to the effect's image (relative to the Assets folder in your project).
 
-Our effect's name will actually be `<Your mod name>_<Your effect name>` when the builder will create it. This is done to prevent name collisions in case either Eremite or other modders add effects with the same name.
+Our effect's name will actually be `<Your mod name>_<Your effect name>` when the builder will create it. This is done to prevent name collisions in case either Eremite or other modders add effects with the same name. For example, if your mod's name is MyFirstMod, then this effect will be named `MyFirstMod_Honeytraps` behind the scenes.
 
 Next, we will use the builder to set up some properties for the effect:
 
@@ -456,7 +458,7 @@ builder.EffectModel.good = insectGoodRef;
 **Note:** Don't forget to make the game add the perk by default in game start. You will do so by referencing the full name of the effect, as created by the builder:
 
 ```cs
-EffectModel effectModel = SO.Settings.GetEffect($"{PluginInfo.PLUGIN_GUID}_Joy of Creation");
+EffectModel effectModel = SO.Settings.GetEffect($"{PluginInfo.PLUGIN_GUID}_Honeytraps");
 effectModel.AddAsPerk();
 ```
 
@@ -464,15 +466,15 @@ Build the project and test to see if your effect works as intended. This is a si
 
 ### Simple Hooked Effect
 
-Now that we learned how to make a simple effect of a certain type, let's learn how to make a very common type of an effect that most likely is one of the more common effect types in the game.
+Now that we learned how to make a simple effect of a certain type, let's learn how to make a very common type of an effect that makes up most of the effects in Against The Storm.
 
-A hooked effect is an effect that applies hooks. Hooks are conditioned triggers that, when their condition applies, apply some kind of reward. The list of hooks can be found [here](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/HOOKS.md), and their name implies their conditions. For example, the `GameTimePassedHook` hook triggers after a certain amount of game time passed (taking into account the game speed, of course).
+A Hooked Effect is an effect that attaches hooks to itself. Hooks are conditioned triggers that, when their condition applies, apply some kind of effect. The list of hooks can be found [here](https://github.com/JamesVeug/AgainstTheStormAPI/blob/master/ATS_API/WIKI/HOOKS.md), and their name implies their conditions. For example, the `GameTimePassedHook` hook triggers after a certain amount of game time passed (taking into account the game speed, of course).
 
-The reward is an effect that gets immediately applied and becomes active, though it is hidden to the player by default. A copy (or stack) of that reward is given each time the hook trigger applies - for instance, you can make an effect that grants Global Resolve cumulatively apply every 5 minutes. Those effects can be either positive or negative to the player.
+The effect that the hook grants when triggered is immediately applied and becomes active, though it is hidden to the player by default. A copy (or stack) of that reward is given each time the hook trigger applies - for instance, you can make an effect that grants Global Resolve cumulatively apply every 5 minutes. Those effects can be either positive or negative to the player.
 
-Hooked effects are very powerful not only in their capabilities to apply further effects, but also in their capabilities to format the descriptions it displays to the player in dynamic ways.
+Hooked Effects are very powerful not only in their capabilities to apply further effects, but also in their capabilities to format the descriptions it displays to the player in dynamic ways.
 
-For the example of this hooked effect, we will make an effect named Modding Tools. This effect triggers whenever a total of 8 new villagers are added to the village over time for any reason, and grants you a bonus of 1 Global Resolve. We will also use the ATS API library for support on building this hooked effect.
+For the example of this hooked effect, we will make an effect named **Modding Tools**. This effect triggers whenever a total of 8 new villagers are added to the village over time for any reason, and grants you a bonus of 1 Global Resolve. We will also use the ATS API library for support on creating this Hooked Effect.
 
 First, let's define the effect and the builder class:
 
@@ -483,7 +485,7 @@ string effectIconPath = "ModdingTools.png";
 HookedEffectBuilder builder = new(PluginInfo.PLUGIN_GUID, effectName, effectPath);
 ```
 
-Note that we used the `HookedEffectBuilder` builder this time; this will give us a builder that we can use for building and configuring hooked effects.
+Note that we used the `HookedEffectBuilder` builder this time; this will give us a builder that we can use for building and configuring Hooked Effects.
 
 Next, let's add its generic details:
 
@@ -505,7 +507,7 @@ builder.AddHook(HookFactory.AfterXNewVillagers(8));
 
 First, we use the `HookFactory`, another class introduced by the ATS API. This stores a bunch of easy to create hooks by introducing methods that handle them for you. One such method is the `AfterXNewVillagers`, which returns a hook that triggers after a number of villagers arrive - in this case, 8 villagers.
 
-Second, we use the `AddHook` method of the builder to add the hook produced by the hook factory to the perk.
+Second, we use the `AddHook` method of the builder to attach the hook produced by the hook factory to the perk.
 
 Note that this alone doesn't do much. While it's hooked to a condition, it doesn't trigger any effect when it is fulfilled. So let's add an effect: 1 permanent Global Resolve each time the hook is fulfilled:
 
@@ -513,11 +515,11 @@ Note that this alone doesn't do much. While it's hooked to a condition, it doesn
 builder.AddHookedEffect(EffectFactory.AddHookedEffect_IncreaseResolve(builder, 1, ResolveEffectType.Global));
 ```
 
-Similar to adding hooks, we use the `EffectFactory` introduced by the ATS API. Like the Hook Factory, it stores a bunch of methods to easily set up and produce effects. Note that this one takes the `builder` as argument - which it uses to give the effect a unique name to make sure there are no name collisions between different perks.
+Similar to adding hooks, we use the `EffectFactory` introduced by the ATS API to add effects. Like the `HookFactory` class, it stores a bunch of methods to easily set up and produce effects. Note that this one takes the `builder` as argument - which it uses to give the effect a unique name to make sure there are no name collisions between different effects.
 
 Also, note that it takes two more arguments: the amount of resolve to grant, and the type of resolve to grant (global, racial, need based, etc.). We have set it to grant 1 Global Resolve.
 
-Then we use the `AddHookedEffect` to assign the effect to the hook. This means that this effect is added to the player each time the hook triggers.
+Then we use the `AddHookedEffect` method to attach the effect to the hook. This means that this effect is added to the player each time the hook triggers, which turns it into a *hooked effect*.
 
 **NOTE:** A single Hooked Effect can host multiple hooks and effects, which can be used to apply complex effects and rewards. We'll see an example of that later on.
 
@@ -539,7 +541,7 @@ builder.SetDescriptionArgs(
 ```
 
 Description args, or arguments, instructs the game what to fill in dynamically for the text. It takes 3 parameters:
-* Source Type - where the value comes from? From what type of structure? This can be a hook, a hooked effect, or other types of hooks.
+* Source Type - where the value comes from? From what type of structure? This can be a hook, a hooked effect, or other types of sources supported by Hooked Effects.
 * Text Argument Type - which field is the value stored in? This usually refers to a common field.
 * Source Index - if you have multiple sources of the same type (e.g. 2 hooks), what is the index, starting from 0, the desired source is in? For example, if you added two hooks, then the first hook is assigned to Source Index 0 while the other is assigned to Source Index 1.
 
@@ -547,7 +549,7 @@ In order for the dynamic texts to be assigned to the values we want, we need to 
 
 The first value will replace `{0}`, which should be `Every 8 new Villagers..`. The `8` is defined in the hook, as it listens to the amount of villagers added, so the Source Type should be `SourceType.Hook`. The number `8` comes from the amount field of the **hook**, which is provided in the Hook Factory method. This means the Text Argument Type should be `TextArgType.Amount`. And lastly, we only have one hook, which should be at index 0, so that would be Source Index `0`.
 
-Similarly, we do the same for the `{1}`, which should be substituted to `gain +1 Global Resolve.`. The number `1` comes from the amount field of the **effect** that we produced using the Effect Factory, so this time we need to use `SourceType.HookedEffect`. The rest are the same, since this is the first Hooked Effect, so it also gets stored in Source Index `0`.
+Similarly, we do the same for the `{1}`, which should be substituted to `gain +1 Global Resolve.`. The number `1` comes from the amount field of the **effect** that we produced using the Effect Factory, so this time we need to use `SourceType.HookedEffect`. For the source index, we use `0` since this is the first Hooked Effect stored in this effect, so it gets stored in Source Index `0`.
 
 This should set up our regular description. But we also want to include preview descriptions, which are shown each time we hover over a perk that we have. So let's do that:
 
@@ -555,7 +557,7 @@ This should set up our regular description. But we also want to include preview 
 builder.SetPreviewDescription("+{0} Global Resolve");
 ```
 
-In this case, we want the text to show how much Global Resolve we got, in total, from all the instances of the hook firing. This will count up all instances (stacks) of the hooked effect and calculate how much Global Resolve they give the player in total. Note that this value is an `Integer` - it cannot be `3.5` Global Resolve for instance. This is important in order to make the dynamic value show up properly.
+In this case, we want the text to show how much Global Resolve we got, in total, from all instances of the hook firing. This will count up all instances (stacks) of the hooked effect and calculate how much Global Resolve they give the player in total. Note that this value is an `Integer` - it cannot be `3.5` Global Resolve for instance. This is important in order to make the dynamic value show up properly.
 
 Let's add the arguments to the preview to set up the dynamic values:
 
@@ -569,7 +571,7 @@ Similarly to the Description Argument, we need to provide certain arguments:
 * HookedStateTextArg - This is a collection of possible ways to instruct the system to return a calculated value.
 * Source Index - Similar to description args. Controls which hooked effect to look at, starting from the first effect hook at index 0.
 
-In this case, we want it to calculate the total Global Resolve bonus from the first (and only) hooked effect. So we can use the `TotalGainIntFromHooked` method and instruct it to look at Source Index 0.
+In this case, we want it to calculate the total Global Resolve bonus from all instances of the first Hooked Effect. We can use the `TotalGainIntFromHooked` method and instruct it to look at Source Index 0.
 
 **Note:** Each method has a `float` variance (such as `TotalGainFloatFromHooked`). If you choose the wrong numeric type (int/float), it will always default the value to 0.
 
@@ -606,9 +608,7 @@ traderValueSoldHook.startWithCurrentValue = true;
 builder.AddHook(traderValueSoldHook);
 ```
 
-As you can see, we created an instance of the hook. Then we set its `amount` value to 20, which indicates how much the player has to sell for it trigger. And lastly, we also set the `startWithCurrentValue` property to true. This makes it so the effect becomes *retroactive*, as it starts with the total accumulated worth of value sold since the start of the game. If this was set to false, then it would simply start with a value of `0`, which meant the player has to start selling items from the moment this perk was obtained.
-
-However, for this perk we want it to be retroactive so you'll get the bonus for past deals with the traders.
+As you can see, we created an instance of the hook. Then we set its `amount` value to 20, which indicates how much the player has to sell for it trigger. And lastly, we also set the `startWithCurrentValue` property to true. This makes it so the effect becomes *retroactive*, as it starts with the total accumulated worth of value sold since the start of the game. If this was set to false, then it would simply start with a value of `0`, which meant the player has to start selling items from the moment this perk was obtained. In our case, we want this perk to be retroactive so you'll get the bonus for past deals with the traders.
 
 Then the builder adds this hook to itself.
 
@@ -642,25 +642,25 @@ foreach (GoodModel goodModel in goodsToReceive)
 }
 ```
 
-For every good type that we care about, we got a model. And for each model, we created a GoodRef that will represent 3 of that good (e.g. 3 fabrics). We will then use the Effect Factory to create a new Hooked Effect of type `GoodsEffectModel`, which grants goods based on the Good Reference attached to it. Then, each effect is attached to the builder.
+For every good type that we care about, we got a model. And for each model, we created a GoodRef that will represent 3 of that good (e.g. 3 fabrics). We will then use the Effect Factory to create a new effect of type `GoodsEffectModel`, which grants goods based on the Good Reference attached to it. Then, each effect is attached to the builder.
 
-In total, we now have 1 Hook and 3 Hooked Effects, each giving a single bundle of 3 items, respectively. In other words, each time the hook triggers, the 3 hooked effects apply, granting the bonus goods.
+In total, we now have 1 Hook and 3 Hooked Effects in this effect, each giving a single bundle of 3 items, respectively. In other words, each time the hook triggers, the 3 hooked effects apply, granting the bonus goods.
 
 Let's also add the description:
 
 ```cs
 builder.SetDescription("Traders like to throw in small extras in their deals with you. " + 
-	"When selling goods worth {0} Amber to traders and trade routes, gain {1} Fabrics, Bricks and Planks" +    
-    "(The bonus is added retroactively).");
+						"When selling goods worth {0} Amber to traders and trade routes, gain {1} Fabrics, Bricks and Planks" +    
+    					"(The bonus is added retroactively).");
 builder.SetDescriptionArgs(
     (SourceType.Hook, TextArgType.Amount, 0),
     (SourceType.HookedEffect, TextArgType.Amount, 0)
 );
 ```
 
-The description is similar to the Simple Hooked Effect example. We want to get the amount of goods to sell to replace the text `{0}`, and the amount of items to gain to replace the text `{1}`. Since the value gained from each hooked effect is the same for all goods, we can simply take it from the first Hooked Effect.
+The description is similar to the Simple Hooked Effect example. We want to get the amount of goods to sell to replace the placeholder text `{0}`, and the amount of items to gain to replace the placeholder text `{1}`. Since the value gained from each hooked effect is the same for all goods, we can simply take it from the first Hooked Effect.
 
-As mentioned before, this perk is retroactive - we have set the hook as such. So we want to add this nifty text to the description of the text. this retroactive perk description shows up before you gain the perk, such as when looking at the description from order rewards or from a cornerstone selection.
+As mentioned before, this perk is retroactive - we have set the hook as such. So we want to add some text to the description of the text that will describe the retroactive bonus. This retroactive perk description shows up before you gain the perk, such as when looking at the description of the perk from order rewards or from a cornerstone selection.
 
 ```cs
 builder.SetRetroactiveDescription("Expected Gain: {0}");
@@ -673,7 +673,7 @@ In this case, it will append the text `"Expected Gain:"`, and substitute the `{0
 
 **Note:** The retroactive text is always encased in brackets, e.g. `(Expected Gain: 15)`. This is controlled by the system and can be removed by overriding the relevant function - but is out of the scope of this guide. Feel free to override it if you don't want it - but note that it will change all existing perks as well.
 
-Lastly, we would like to show the player their progress towards getting another instance of the goods, so they know how much more they need to sell. This is typically done in the preview text, like this:
+Lastly, we would like to show the player their progress towards getting another instance of the goods, so they know how many more goods they need to sell to get the bonus. This is typically done in the preview text, like this:
 
 ```cs
 builder.SetPreviewDescription("PROGRESS: {0}/{1}. GAINED: {2}");
@@ -687,7 +687,7 @@ builder.SetPreviewDescriptionArgs(
 
 This is similar to the Simple Hooked Effect's preview in that it shows the total bonuses gained from this perk. However, we added the `PROGRESS {0}/{1}` to also denote the current progress.
 
-In this case, `{0}` is replaced with the `ProgressFloat` to show how much worth of items (remember that each item is worth its value in decimals, e.g. 0.14, so that's why we are counting progress in float), and `{1}` is replaced with the `HookAmountInt`, which is the amount `20` that we've set in the hook.
+In this case, `{0}` is replaced with the `ProgressFloat` to show how much worth of items, and `{1}` is replaced with the `HookAmountInt`, which is the amount `20` that we've set in the hook. Remember that each item is worth its value in decimals, e.g. 0.14, so that's why we are counting progress in float rather than integers.
 
 This will show something along the lines of `PROGRESS: 8.42/20. GAINED: 0`, which is excellent for seeing the progress of this perk. 
 
@@ -695,7 +695,7 @@ This will show something along the lines of `PROGRESS: 8.42/20. GAINED: 0`, whic
 
 The last example of this guide is going to be a somewhat complex perk to create, but it also really emphasizes how powerful and robust is the effect system set up by Eremite.
 
-We are going to make an effect named `Bonding Season`. Its definition is somewhat simple: each time the season changes (hook), we gain 5 Global Resolve which lasts for 120 seconds.
+We are going to make an effect named `Bonding Season`. Its definition is somewhat simple: each time the season changes, we gain 5 Global Resolve which lasts for 120 seconds.
 
 So what makes it complex? Think of the previous Hooked Effects that we made before. Those had hooks that, when triggered, gave a permanent bonus that lasts for the entire game. However, this time we want the bonus to be timed and remove itself after 120 in-game seconds.
 
@@ -703,7 +703,7 @@ So let's first discuss what we can do. Like Hooked Effect have the `AddHook` fun
 
 However, the application is not quite what we want - because we don't want to lose the perk that triggers this on every season; we only want to lose the global resolve bonus after the time elapses. It should still apply again on the next season change, after all. So we need to apply a little more thought. We'll get back to this later.
 
-Additionally, liked there are Hooked Effects, there are also Instant Effects. While Hooked Effect wait for the hook to trigger to be applied, Instant Effects apply immediately when obtaining the perk. For instance, imagine a perk that gives you +1 to meat production immediately, and the bonus also increased by +1 (hooked effect) for every 70 Skewers produced (hook). This is useful when designing perks that we might want to apply without having to wait for a hook - and only once.
+Additionally, like there are Hooked Effects, there are also Instant Effects. While Hooked Effect wait for the hook to trigger to be applied, Instant Effects apply immediately when obtaining the perk. For instance, imagine a perk that gives you +1 to meat production immediately, and the bonus also increased by +1 (hooked effect) for every 70 Skewers produced (hook). This is useful when designing perks that we might want to apply without having to wait for a hook - and only once per copy.
 
 Taking into consideration all of those capabilities, let's think what we want to do to create the Bonding Season perk:
 
@@ -745,11 +745,18 @@ builder.EffectModel.showHookedRewardsAsPerks = true;
 
 Now the player would see two effects - the permanent one and the timed one that grants the global resolve bonus.
 
+Let's prepare the removal hook for the timed perk:
+
+```cs
+GameTimePassedHook gameTimePassedRemovalHook = Activator.CreateInstance<GameTimePassedHook>();
+gameTimePassedRemovalHook.startWithCurrentValue = false; // not retroactive, start from the current time
+gameTimePassedRemovalHook.seconds = 120f;
+```
+
 Next, we need to prepare the timed perk, the same way we do on the permanent perk:
 
 ```cs
 HookedEffectBuilder resolveBonusBuilder = new(PluginInfo.PLUGIN_GUID, effectName + "_resolveHookedEffect", effectIconPath);
-resolveBonusBuilder.EffectModel.hooks = [gameTimePassedRemovalHook];
 resolveBonusBuilder.SetPositive(true);
 resolveBonusBuilder.SetRarity(EffectRarity.Epic);
 resolveBonusBuilder.SetDisplayName(effectNameName);
@@ -765,9 +772,8 @@ resolveBonusBuilder.AddInstantEffect(EffectFactory.AddHookedEffect_IncreaseResol
 And it also has a removal hook, which will remove that perk when the time elapses:
 
 ```cs
-GameTimePassedHook gameTimePassedRemovalHook = Activator.CreateInstance<GameTimePassedHook>();
-gameTimePassedRemovalHook.startWithCurrentValue = false; // not retroactive, start from the current time
-gameTimePassedRemovalHook.seconds = 120f;
+// TODO: remove when API supports it
+resolveBonusBuilder.EffectModel.hooks = [gameTimePassedRemovalHook]; x
 resolveBonusBuilder.AddRemovalHook(gameTimePassedRemovalHook);
 ```
 
@@ -781,20 +787,18 @@ resolveBonusBuilder.SetDescriptionArgs(
 );
 ```
 
-Note the source types in each argument used to reference the proper values, referencing the instant and removal hooks, respectively.
+Note the source types in each argument used to reference the proper values, referencing the instant effect and the removal hook, respectively.
 
 We also need to include a few properties: those are currently done manually, but will be supported by the API in a later date and handled behind the scenes:
 
 ```cs
-resolveBonusBuilder.EffectModel.hooks = [gameTimePassedRemovalHook];
 resolveBonusBuilder.EffectModel.hasRemovalHooks = true;
 resolveBonusBuilder.EffectModel.hasNestedAmount = true;
 resolveBonusBuilder.EffectModel.nestedAmount = new() { source = SourceType.InstantEffect, type = TextArgType.Amount, sourceIndex = 0 };
 ```
 
 The gist of those changes are:
-* The hooks list should include removal hooks for it to work properly
-* We are marking the timed Hooked Effect as having removal hooks, so the game will listen to.
+* We are marking the timed Hooked Effect as having removal hooks, so the game will listen to it.
 * We are marking the timed Hooked Effect as having nested amount, so the game will check for it.
 * We are setting the nested amount to the amount of resolve given by the Instant Effect that grants Global Resolve bonus.
 
@@ -803,6 +807,7 @@ The nested amount is set in order to show a number at the bottom part of the per
 Another thing we will do is add a timer to the timed perk until it gets removed by adding the following parameters:
 
 ```cs
+// TODO: remove when API supports it
 resolveBonusBuilder.EffectModel.hasRemovalDynamicStatePreview = true;
 resolveBonusBuilder.EffectModel.removalDynamicPreviewText = LocalizationManager.ToLocaText(PluginInfo.PLUGIN_GUID, resolveBonusBuilder.Name, "preview", "TIME LEFT: {0}");
 resolveBonusBuilder.EffectModel.removalStatePreviewArgs = [new() { asTime = true, sourceIndex = 0, source = HookedStateTextArg.HookedStateTextSource.RemovalProgressLeftFloat }];
