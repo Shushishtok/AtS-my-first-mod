@@ -1,3 +1,49 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Getting Started](#getting-started)
+- [Prerequisites:](#prerequisites)
+    * [Against The Storm](#against-the-storm)
+    * [Visual Studio 2022](#visual-studio-2022)
+    * [dnSpy](#dnspy)
+    * [Thunderstore Mod Manager](#thunderstore-mod-manager)
+    * [Modding Template](#modding-template)
+- [First Steps](#first-steps)
+    * [Setting Up Thunderstore Mod Manager](#setting-up-thunderstore-mod-manager)
+    * [Setting Up the Modding Template](#setting-up-the-modding-template)
+    * [Setting up BepInEx console](#setting-up-bepinex-console)
+    * [Testing The Mod](#testing-the-mod)
+    * [Adding Dependencies](#adding-dependencies)
+        + [Unity Libraries](#unity-libraries)
+        + [API Library](#api-library)
+    * [Understanding BepInEx and Harmony](#understanding-bepinex-and-harmony)
+        + [Harmony Prefix](#harmony-prefix)
+        + [Harmony Postfix](#harmony-postfix)
+        + [Using dnSpy to Export AtS Codebase](#using-dnspy-to-export-ats-codebase)
+        + [Adding New Game Mechanics](#adding-new-game-mechanics)
+        + [Changing Existing Stuff](#changing-existing-stuff)
+        + [Hands-On Challenge: Give Yourself a Perk](#hands-on-challenge-give-yourself-a-perk)
+        + [Hands-On Challenge Solution](#hands-on-challenge-solution)
+- [Using The ATS API](#using-the-ats-api)
+    * [Effects](#effects)
+        + [Simple Effect](#simple-effect)
+        + [Simple Hooked Effect](#simple-hooked-effect)
+        + [Retroactive/Progressive Hooked Effect](#retroactiveprogressive-hooked-effect)
+        + [Multi-Layered Hooked Effect](#multi-layered-hooked-effect)
+- [Publishing The Mod](#publishing-the-mod)
+    * [Package Setup](#package-setup)
+        + [Your Mod file](#your-mod-file)
+        + [A Manifest file](#a-manifest-file)
+        + [An Icon](#an-icon)
+        + [A Readme file](#a-readme-file)
+        + [A Changelog file](#a-changelog-file)
+        + [Zip it](#zip-it)
+    * [Uploading the Mod](#uploading-the-mod)
+    * [Uploading a New Version](#uploading-a-new-version)
+    * [References](#references)
+- [More subjects to come soon!](#more-subjects-to-come-soon)
+
+<!-- TOC end -->
+
 # Getting Started
 
 Hello there, viceroy! So you decided to try your hand in modding Against The Storm? The Queen will surely be pleased! Be prepared to embark in an incredible journey, where you will settle the land, the sea and the sky!
@@ -839,6 +885,116 @@ You should now be able to build and run this perk to see it at work.
 
 This should be a proper introduction into effects and their powers. Feel free to discuss with us on the our modding Discord if you need any assistance.
 
+# Publishing The Mod
+
+Once you are happy with your Mod, it is time to publish it to the world. This example will show you how to publish your Mod to the [Thunderstore ATS Mod Page](https://thunderstore.io/c/against-the-storm/).
+
+## Package Setup
+
+To publish your Mod, you will have to prepare a zip package with the following content:
+
+- Your mod .dll file (e.g. `MyFirstMod.dll`)
+- A Manifest file (`manifest.json`)
+- An icon of your choice, which will be displayed with the Mod name for others to see (`icon.png`)
+- A Readme file (`README.md`)
+
+Optionally you can add the following files:
+- A Changelog file (`CHANGELOG.md`)
+
+Note, that the exact filenames are required. If you encounter issue, the Thunderstore page will let you know what's missing.
+
+You can also download the default files from this repository here [/MyFirstModPackage](https://github.com/Shushishtok/AtS-my-first-mod/tree/master/MyFirstModPackage).
+
+### Your Mod file
+
+If you followed this guide for creating your Mod, you can find it in the BepInEx/plugins folder at `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\Default\BepInEx\plugins`.
+
+### A Manifest file
+
+The manifest file (`manifest.json`) contains general information about your mod which will be displayed in the Thunderstore.
+
+A default manifest looks like this:
+
+```json
+{
+  "name": "MyFirstMod",
+  "version_number": "1.0.0",
+  "website_url": "https://website.com",
+  "description": "My first mod with BepInEx",
+  "dependencies": [
+    "BepInEx-BepInExPack-5.4.2100"
+  ]
+}
+```
+### An Icon
+
+The Icon (`icon.png`) must be 256x256px. Since it will be quite small, make sure to keep it simple, so that people can identify it with your Mod.
+
+### A Readme file
+
+The Readme file (`README.md`) can contain a longer description of your mod. It will only be displayed on the Website though.
+
+If you are new to Markdown (`.md`) files, here is a short guide to get you started: [Markdown Basics](https://www.markdownguide.org/basic-syntax/)
+
+### A Changelog file
+
+If you want to, you can add a Changelog file (`CHANGELOG.md`) to document the changes you made with each version. An example could look like this:
+
+```markdown
+# 1.0.1
+- Fixed this and that
+
+# 1.0.0
+- Added my first Mod. It lives!
+```
+
+This will also be displayed on the Website.
+
+### Zip it
+
+Lastly, place all files into one folder and zip it.
+
+## Uploading the Mod
+
+Now you can visit the [Thunderstore Upload Page](https://thunderstore.io/c/against-the-storm/create/) and select your zip to upload. Note you **must login** before being able to access the upload page.
+You can use a Github, Discord or Overwolf Account for the login.
+
+The website will ask you to select a Team. If this is your first time publishing on Thunderstore, you will have to create a Team, which will be shown as the Author of the Mod. Simply follow the instructions on the Website. (If you cannot find it, here is the link to [create a Team on Thunderstore](https://thunderstore.io/settings/teams/)).
+
+Now, once created navigate back to the Upload Page and choose the created Team.
+
+You can also upload your zip file now by clicking on `Choose or drag file here`.
+
+Next, you will be asked to select a Community, choose `Against the Storm`.
+
+Make sure to select the tags that apply. For your first Mod it probably is simply `Mods`, but feel free to select more if they fit.
+
+Check `Contains NSFW content` if it applies as well.
+
+Once you are done, hit `Submit` and once the link to the Mod page is shown, you are successful in publishing your first Mod, congrats! Should there be any issues, the Website will let you know what's wrong.
+
+Note, that it might take a few minutes for your Mod to show up in the App, but as soon as it's on the Website, you can sit back and relax.
+
+## Uploading a New Version
+
+Sometimes you want to update your Mod because of a recent fix or a new feature. Since you published your Mod already, you will have to publish an Update for it as well.
+To do so, gather your package files as described in the [Package Setup](#package-setup).
+
+First, adjust the `manifest.json` version_number to a higher value. **Important:** Do not change the name, or it will not be recognized as a new version!
+
+Second, if you want to, you can create a Changelog file (`CHANGELOG.md`) or adjust the existing one to let people know what you changed.
+
+Now gather your changed .dll file and zip your files like before.
+
+Lastly, head over to the [Thunderstore Upload Page](https://thunderstore.io/c/against-the-storm/create/), make sure to select the same Team, Community and Categories as before and hit submit.
+The link shown will lead you to the same Mod Page as before, but when you look under Versions, you will see the newly created one. Congrats, you now published your first update!
+
+## References
+
+Here are some references to help you troubleshoot, should you encounter issues along the way:
+
+- https://h3vr-modding.github.io/wiki/creating/thunderstore/uploading.html
+- https://github.com/nayr31/TSGen.Check
 
 # More subjects to come soon!
 
