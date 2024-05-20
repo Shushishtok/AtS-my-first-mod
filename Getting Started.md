@@ -887,27 +887,27 @@ This should be a proper introduction into effects and their powers. Feel free to
 
 # Publishing The Mod
 
-Once you are happy with your Mod, it is time to publish it to the world. This example will show you how to publish your Mod to the [Thunderstore ATS Mod Page](https://thunderstore.io/c/against-the-storm/).
+Once you are happy with your mod, it is time to publish it to the world. This example will show you how to publish your mod to the [Thunderstore ATS Mod Page](https://thunderstore.io/c/against-the-storm/).
 
 ## Package Setup
 
-To publish your Mod, you will have to prepare a zip package with the following content:
+To publish your mod, you will have to prepare a zip package with the following content:
 
 - Your mod .dll file (e.g. `MyFirstMod.dll`)
 - A Manifest file (`manifest.json`)
-- An icon of your choice, which will be displayed with the Mod name for others to see (`icon.png`)
+- An icon of your choice, which will be displayed with the mod name for others to see (`icon.png`)
 - A Readme file (`README.md`)
 
 Optionally you can add the following files:
 - A Changelog file (`CHANGELOG.md`)
 
-Note, that the exact filenames are required. If you encounter issue, the Thunderstore page will let you know what's missing.
+Note, that the exact filenames are required. If you encounter an issue, the Thunderstore page will let you know what's missing.
 
 You can also download the default files from this repository here [/MyFirstModPackage](https://github.com/Shushishtok/AtS-my-first-mod/tree/master/MyFirstModPackage).
 
 ### Your Mod file
 
-If you followed this guide for creating your Mod, you can find it in the BepInEx/plugins folder at `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\Default\BepInEx\plugins`.
+If you followed this guide for creating your mod, you can find it in the BepInEx/plugins folder at `C:\Users\<your username>\AppData\Roaming\Thunderstore Mod Manager\DataFolder\AgainstTheStorm\profiles\Default\BepInEx\plugins`.
 
 ### A Manifest file
 
@@ -928,7 +928,7 @@ A default manifest looks like this:
 ```
 ### An Icon
 
-The Icon (`icon.png`) must be 256x256px. Since it will be quite small, make sure to keep it simple, so that people can identify it with your Mod.
+The Icon (`icon.png`) must be 256x256px. Since it will be quite small, make sure to keep it simple, so that people can identify it with your mod.
 
 ### A Readme file
 
@@ -945,7 +945,7 @@ If you want to, you can add a Changelog file (`CHANGELOG.md`) to document the ch
 - Fixed this and that
 
 # 1.0.0
-- Added my first Mod. It lives!
+- Added my first mod. It lives!
 ```
 
 This will also be displayed on the Website.
@@ -959,7 +959,7 @@ Lastly, place all files into one folder and zip it.
 Now you can visit the [Thunderstore Upload Page](https://thunderstore.io/c/against-the-storm/create/) and select your zip to upload. Note you **must login** before being able to access the upload page.
 You can use a Github, Discord or Overwolf Account for the login.
 
-The website will ask you to select a Team. If this is your first time publishing on Thunderstore, you will have to create a Team, which will be shown as the Author of the Mod. Simply follow the instructions on the Website. (If you cannot find it, here is the link to [create a Team on Thunderstore](https://thunderstore.io/settings/teams/)).
+The website will ask you to select a Team. If this is your first time publishing on Thunderstore, you will have to create a Team, which will be shown as the Author of the mod. Simply follow the instructions on the Website. (If you cannot find it, here is the link to [create a Team on Thunderstore](https://thunderstore.io/settings/teams/)).
 
 Now, once created navigate back to the Upload Page and choose the created Team.
 
@@ -967,17 +967,17 @@ You can also upload your zip file now by clicking on `Choose or drag file here`.
 
 Next, you will be asked to select a Community, choose `Against the Storm`.
 
-Make sure to select the tags that apply. For your first Mod it probably is simply `Mods`, but feel free to select more if they fit.
+Make sure to select the tags that apply. For your first mod it probably is simply `Mods`, but feel free to select more if they fit.
 
 Check `Contains NSFW content` if it applies as well.
 
-Once you are done, hit `Submit` and once the link to the Mod page is shown, you are successful in publishing your first Mod, congrats! Should there be any issues, the Website will let you know what's wrong.
+Once you are done, hit `Submit` and once the link to the mod page is shown, you are successful in publishing your first mod, congrats! Should there be any issues, the Website will let you know what's wrong.
 
-Note, that it might take a few minutes for your Mod to show up in the App, but as soon as it's on the Website, you can sit back and relax.
+Note, that it might take a few minutes for your mod to show up in the App, but as soon as it's on the Website, you can sit back and relax.
 
 ## Uploading a New Version
 
-Sometimes you want to update your Mod because of a recent fix or a new feature. Since you published your Mod already, you will have to publish an Update for it as well.
+Sometimes you want to update your mod because of a recent fix or a new feature. Since you published your mod already, you will have to publish an Update for it as well.
 To do so, gather your package files as described in the [Package Setup](#package-setup).
 
 First, adjust the `manifest.json` version_number to a higher value. **Important:** Do not change the name, or it will not be recognized as a new version!
@@ -987,7 +987,7 @@ Second, if you want to, you can create a Changelog file (`CHANGELOG.md`) or adju
 Now gather your changed .dll file and zip your files like before.
 
 Lastly, head over to the [Thunderstore Upload Page](https://thunderstore.io/c/against-the-storm/create/), make sure to select the same Team, Community and Categories as before and hit submit.
-The link shown will lead you to the same Mod Page as before, but when you look under Versions, you will see the newly created one. Congrats, you now published your first update!
+The link shown will lead you to the same mod Page as before, but when you look under Versions, you will see the newly created one. Congrats, you now published your first update!
 
 ## References
 
